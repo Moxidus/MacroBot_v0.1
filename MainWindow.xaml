@@ -5,8 +5,49 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MacroBot_v0._1"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Icon="C:\Users\domku\OneDrive\Plocha\path31.png"
+        Title="Macro Bot" Height="450" Width="800">
 
+    
+    
+    
+
+    <Grid Background="#525252">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="30px"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10px"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20px"/>
+            <RowDefinition Height="10px"/>
+            <RowDefinition Height="25px"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10px"/>
+        </Grid.RowDefinitions>
+
+        
+        
+        
+        
+        <DockPanel Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
+            <Menu DockPanel.Dock="Top" Background="#FF414141" Foreground="White">
+                <MenuItem Header="_File" Background="#FF414141" BorderBrush="{x:Null}">
+                    <MenuItem Header="_New" Background="#FF414141" />
+                    <MenuItem Header="_Open" Background="#FF414141" />
+                    <MenuItem Header="_Save"  Background="#FF414141" />
+                    <Separator />
+                    <MenuItem Header="_Exit"  Background="#FF414141" />
+                </MenuItem>
+                
+            </Menu>
+            <TextBox AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
+        </DockPanel>
+
+
+        <RichTextBox Grid.Column="1"
+                     Grid.Row="3" Background="#FF313131" BorderBrush="{x:Null}" Foreground="White"/>
+        
     </Grid>
 </Window>
