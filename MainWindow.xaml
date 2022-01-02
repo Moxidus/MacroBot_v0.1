@@ -35,8 +35,9 @@
             <Menu DockPanel.Dock="Top" Background="#FF414141" Foreground="White">
                 <MenuItem Header="_File" BorderBrush="{x:Null}">
                     <MenuItem Header="_New" Foreground="Black"/>
-                    <MenuItem Header="_Open" Foreground="Black"/>
-                    <MenuItem Header="_Save as" Foreground="Black" Click="SaveFile"/>
+                    <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
+                    <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
+                    <MenuItem Header="_Save as" Foreground="Black" Click="SaveFileAs"/>
                     <Separator/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>
@@ -49,7 +50,7 @@
                     Grid.Row="2"
                     HorizontalAlignment="Center"
                     Orientation="Horizontal">
-            <Button>
+            <Button Click="StartProgram">
                 <TextBlock Text="Start"/>
             </Button>
             <Button>

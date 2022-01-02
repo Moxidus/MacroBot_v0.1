@@ -9,6 +9,33 @@
 
   <ItemGroup>
     <None Remove="Assets\logo.png" />
+    <None Remove="External\MacroBotV0.1Language.deps.json" />
+    <None Remove="External\MacroBotV0.1Language.dll" />
+    <None Remove="External\MacroBotV0.1Language.exe" />
+    <None Remove="External\MacroBotV0.1Language.pdb" />
+    <None Remove="External\MacroBotV0.1Language.runtimeconfig.dev.json" />
+    <None Remove="External\MacroBotV0.1Language.runtimeconfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="External\MacroBotV0.1Language.deps.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\MacroBotV0.1Language.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\MacroBotV0.1Language.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\MacroBotV0.1Language.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\MacroBotV0.1Language.runtimeconfig.dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\MacroBotV0.1Language.runtimeconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

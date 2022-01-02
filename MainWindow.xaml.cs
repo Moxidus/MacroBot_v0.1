@@ -22,33 +22,31 @@ namespace MacroBot_v0._1
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string editingFilePath = "";
+        public string EditingFilePath
+        {
+            get
+            {
+                return editingFilePath;
+            }
+            set
+            {
+                editingFilePath = value;
+
+                if (editingFilePath == "")
+                    this.Title = "Macro Bot";
+                else
+                    this.Title = "Macro Bot" + " - " + editingFilePath;
+            }
+        }
+
         public MainWindow(string[] Args)
         {
             InitializeComponent();
-
-            //MessageBox.Show("DEBUG LMAO:" + thing);
-
-            if(Args.Length != 0)
-                OpenFile(Args[0].ToString());
         }
 
-        public void OpenFile(string path)
-        {
-            try
-            {
-                string scriptText = File.ReadAllText(path);
 
-                scriptCode.Document.Blocks.Clear();
-                scriptCode.Document.Blocks.Add(new Paragraph(new Run(scriptText)));
-            }
-            catch (Exception ex)// This is here incase there is error with the file name
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-
-        }
-
-        public void SaveFile(object sender, RoutedEventArgs e)
+        public void SaveFileAs(object sender, RoutedEventArgs e)
         {
             string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
 
@@ -66,7 +64,72 @@ namespace MacroBot_v0._1
             {
                 string filename = dlg.FileName;
                 File.WriteAllText(filename, scriptText);
+                EditingFilePath = filename;
             }
+
+        }
+
+        private void OpenFile(object sender, RoutedEventArgs e)
+        {
+
+            Microsoft.Win32.OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
+            openFile.DefaultExt = ".mcr"; // Default file extension
+            openFile.Filter = "Macro script file (.mcr)|*.mcr"; // Filter files by extension
+
+            Nullable<bool> results = openFile.ShowDialog();
+
+            if (results != true)
+                return;
+
+            string path = openFile.FileName;
+            EditingFilePath = path;
+            try
+            {
+                string scriptText = File.ReadAllText(path);
+
+                scriptCode.Document.Blocks.Clear();
+                scriptCode.Document.Blocks.Add(new Paragraph(new Run(scriptText)));
+            }
+            catch (Exception ex)// This is here incase there is error with the file name
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void StartProgram(object sender, RoutedEventArgs e)
+        {
+            SaveFile(sender, e);
+
+            string output;
+            using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
+            {
+                pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
+                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
+                pProcess.StartInfo.UseShellExecute = false;
+                //pProcess.StartInfo.RedirectStandardOutput = true;
+                pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
+                pProcess.StartInfo.CreateNoWindow = false; //not diplay a windows
+                pProcess.Start();
+                //output = pProcess.StandardOutput.ReadToEnd(); //The output result
+                pProcess.WaitForExit();
+            }
+
+            //MessageBox.Show(output);
+        }
+
+        private void SaveFile(object sender, RoutedEventArgs e)
+        {
+            if (EditingFilePath == "")
+            {
+                SaveFileAs(sender, e);
+                return;
+            }
+
+            string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
+
+                string filename = EditingFilePath;
+                File.WriteAllText(filename, scriptText);
+                EditingFilePath = filename;
 
         }
     }
