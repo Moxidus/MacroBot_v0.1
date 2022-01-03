@@ -67,7 +67,7 @@
                      Grid.Row="3" 
                      Background="#FF313131"
                      BorderBrush="{x:Null}"
-                     Foreground="White">
+                     Foreground="White" AcceptsTab="True">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>

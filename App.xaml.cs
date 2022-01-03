@@ -26,8 +26,8 @@ namespace MacroBot_v0._1
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-           if (!IsAssociated())
-                Associate();
+           //if (!IsAssociated())
+            //    Associate();
             MainWindow mainWindow = new MainWindow(e.Args);
             mainWindow.Show();
         }
