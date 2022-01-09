@@ -34,14 +34,16 @@
         <DockPanel Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
             <Menu DockPanel.Dock="Top" Background="#FF414141" Foreground="White">
                 <MenuItem Header="_File" BorderBrush="{x:Null}">
-                    <MenuItem Header="_New" Foreground="Black"/>
+                    <MenuItem Header="_New" Foreground="Black" Click="createNew"/>
                     <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
                     <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
                     <MenuItem Header="_Save as" Foreground="Black" Click="SaveFileAs"/>
                     <Separator/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>
-                
+                <MenuItem Header="_Edit" BorderBrush="{x:Null}">
+                    <MenuItem Header="_Insert Image" Foreground="Black"/>
+                </MenuItem>
             </Menu>
             <TextBox AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
         </DockPanel>

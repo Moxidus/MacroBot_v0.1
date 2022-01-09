@@ -46,6 +46,14 @@ namespace MacroBot_v0._1
         }
 
 
+
+        public void createNew(object sender, RoutedEventArgs e)
+        {
+            SaveFile(sender, e);
+            scriptCode.Document.Blocks.Clear();
+            editingFilePath = "";
+        }
+
         public void SaveFileAs(object sender, RoutedEventArgs e)
         {
             string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
