@@ -9,12 +9,38 @@
 
   <ItemGroup>
     <None Remove="Assets\logo.png" />
+    <None Remove="External\Emgu.CV.Bitmap.dll" />
+    <None Remove="External\Emgu.CV.Platform.NetStandard.dll" />
     <None Remove="External\MacroBotV0.1Language.deps.json" />
     <None Remove="External\MacroBotV0.1Language.dll" />
     <None Remove="External\MacroBotV0.1Language.exe" />
     <None Remove="External\MacroBotV0.1Language.pdb" />
     <None Remove="External\MacroBotV0.1Language.runtimeconfig.dev.json" />
     <None Remove="External\MacroBotV0.1Language.runtimeconfig.json" />
+    <None Remove="External\Microsoft.Win32.SystemEvents.dll" />
+    <None Remove="External\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll" />
+    <None Remove="External\runtimes\win-x64\native\concrt140.dll" />
+    <None Remove="External\runtimes\win-x64\native\cvextern.dll" />
+    <None Remove="External\runtimes\win-x64\native\msvcp140.dll" />
+    <None Remove="External\runtimes\win-x64\native\msvcp140_1.dll" />
+    <None Remove="External\runtimes\win-x64\native\msvcp140_2.dll" />
+    <None Remove="External\runtimes\win-x64\native\msvcp140_atomic_wait.dll" />
+    <None Remove="External\runtimes\win-x64\native\msvcp140_codecvt_ids.dll" />
+    <None Remove="External\runtimes\win-x64\native\opencv_videoio_ffmpeg454_64.dll" />
+    <None Remove="External\runtimes\win-x64\native\vcruntime140.dll" />
+    <None Remove="External\runtimes\win-x64\native\vcruntime140_1.dll" />
+    <None Remove="External\runtimes\win-x86\native\concrt140.dll" />
+    <None Remove="External\runtimes\win-x86\native\cvextern.dll" />
+    <None Remove="External\runtimes\win-x86\native\msvcp140.dll" />
+    <None Remove="External\runtimes\win-x86\native\msvcp140_1.dll" />
+    <None Remove="External\runtimes\win-x86\native\msvcp140_2.dll" />
+    <None Remove="External\runtimes\win-x86\native\msvcp140_atomic_wait.dll" />
+    <None Remove="External\runtimes\win-x86\native\msvcp140_codecvt_ids.dll" />
+    <None Remove="External\runtimes\win-x86\native\opencv_videoio_ffmpeg454.dll" />
+    <None Remove="External\runtimes\win-x86\native\vcruntime140.dll" />
+    <None Remove="External\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll" />
+    <None Remove="External\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll" />
+    <None Remove="External\System.Drawing.Common.dll" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,12 +63,78 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\MacroBotV0.1Language.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
     <Content Include="External\MacroBotV0.1Language.runtimeconfig.dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\MacroBotV0.1Language.runtimeconfig.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\unix\lib\netcoreapp3.0\System.Drawing.Common.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\concrt140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\cvextern.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\msvcp140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\msvcp140_1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\msvcp140_2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\msvcp140_atomic_wait.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\msvcp140_codecvt_ids.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\opencv_videoio_ffmpeg454_64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\vcruntime140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x64\native\vcruntime140_1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\concrt140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\cvextern.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\msvcp140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\msvcp140_1.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\msvcp140_2.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\msvcp140_atomic_wait.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\msvcp140_codecvt_ids.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\opencv_videoio_ffmpeg454.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win-x86\native\vcruntime140.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win\lib\netcoreapp3.0\Microsoft.Win32.SystemEvents.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\runtimes\win\lib\netcoreapp3.0\System.Drawing.Common.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -58,6 +150,18 @@
     <Resource Include="Assets\logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+    <Content Include="External\Emgu.CV.Bitmap.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\Emgu.CV.Platform.NetStandard.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\Microsoft.Win32.SystemEvents.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="External\System.Drawing.Common.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

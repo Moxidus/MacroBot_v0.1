@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,8 @@ using System.Windows.Documents;
 
 using Emgu.CV;
 using Emgu.CV.Structure;
+
+using System.IO;
 
 namespace MacroBot_v0._1
 {
@@ -50,7 +53,7 @@ namespace MacroBot_v0._1
 
         public void InsertImage(object sender, RoutedEventArgs e)
         {
-            AssetsList.Items.Add(new AssetItem(SnipMaker.takeSnip(), "Image01"));
+            AssetsList.Items.Add(new AssetItem(SnipMaker.takeSnip(), "Image01"));//TODO: Make main window hide when screenshoting
         }
 
         public void createNew(object sender, RoutedEventArgs e)
@@ -114,21 +117,41 @@ namespace MacroBot_v0._1
         {
             SaveFile(sender, e);
 
+            List<string> paths = saveAssetsToTemp();
+            string PathPara = "";
+            if (paths.Count > 0)
+                paths.ForEach(x => PathPara += x + " ");
+
+
             string output;
             using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
             {
                 pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
-                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
+                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\" -a \"{PathPara}\""; //argument
                 pProcess.StartInfo.UseShellExecute = false;
-                //pProcess.StartInfo.RedirectStandardOutput = true;
+                pProcess.StartInfo.RedirectStandardOutput = true;
                 pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                 pProcess.StartInfo.CreateNoWindow = false; //not diplay a windows
                 pProcess.Start();
-                //output = pProcess.StandardOutput.ReadToEnd(); //The output result
+                output = pProcess.StandardOutput.ReadToEnd(); //The output result
                 pProcess.WaitForExit();
             }
 
-            //MessageBox.Show(output);
+            MessageBox.Show(output);
+        }
+
+        private List<string> saveAssetsToTemp()
+        {
+            List<string> allAssetsPath = new List<string>();
+            string tempFileLoc = Path.GetTempPath();
+            foreach(AssetItem item in AssetsList.Items)
+            {
+                string path = tempFileLoc + item.name + ".jpg";
+                item.asset.Save(path);
+                allAssetsPath.Add(path);
+            }
+
+            return allAssetsPath;
         }
 
         private void SaveFile(object sender, RoutedEventArgs e)
