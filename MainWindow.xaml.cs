@@ -136,7 +136,6 @@ namespace MacroBot_v0._1
                 output = pProcess.StandardOutput.ReadToEnd(); //The output result
                 pProcess.WaitForExit();
             }
-
             MessageBox.Show(output);
         }
 
