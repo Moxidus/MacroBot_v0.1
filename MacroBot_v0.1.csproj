@@ -28,7 +28,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="External\MacroBotV0.1Language.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
     <Content Include="External\MacroBotV0.1Language.runtimeconfig.dev.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
