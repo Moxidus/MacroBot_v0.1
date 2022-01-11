@@ -9,11 +9,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
+using Emgu.CV;
+using Emgu.CV.Structure;
 
 namespace MacroBot_v0._1
 {
@@ -43,8 +41,24 @@ namespace MacroBot_v0._1
         public MainWindow(string[] Args)
         {
             InitializeComponent();
+            scriptCode.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scriptCode.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+            scriptCode.Document.PageWidth = 1000;
         }
 
+
+
+        public void InsertImage(object sender, RoutedEventArgs e)
+        {
+            AssetsList.Items.Add(new AssetItem(SnipMaker.takeSnip(), "Image01"));
+        }
+
+        public void createNew(object sender, RoutedEventArgs e)
+        {
+            SaveFile(sender, e);
+            scriptCode.Document.Blocks.Clear();
+            editingFilePath = "";
+        }
 
         public void SaveFileAs(object sender, RoutedEventArgs e)
         {

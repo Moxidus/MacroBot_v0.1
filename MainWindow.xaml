@@ -6,16 +6,17 @@
         xmlns:local="clr-namespace:MacroBot_v0._1"
         mc:Ignorable="d"
         Icon="/Assets/logo.png"
-        Title="Macro Bot" Height="450" Width="800">
+        Title="Macro Bot" Height="700" Width="900">
 
-    
-    
-    
+
+
+
 
     <Grid Background="#525252">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="30px"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="337*"/>
+            <ColumnDefinition Width="43*"/>
             <ColumnDefinition Width="10px"/>
         </Grid.ColumnDefinitions>
 
@@ -23,33 +24,37 @@
             <RowDefinition Height="20px"/>
             <RowDefinition Height="10px"/>
             <RowDefinition Height="25px"/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="15px"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="10px"/>
         </Grid.RowDefinitions>
 
-        
-        
-        
-        
-        <DockPanel Grid.ColumnSpan="3" HorizontalAlignment="Stretch">
+
+
+
+
+        <DockPanel Grid.ColumnSpan="4">
             <Menu DockPanel.Dock="Top" Background="#FF414141" Foreground="White">
                 <MenuItem Header="_File" BorderBrush="{x:Null}">
-                    <MenuItem Header="_New" Foreground="Black"/>
+                    <MenuItem Header="_New" Foreground="Black" Click="createNew"/>
                     <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
                     <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
                     <MenuItem Header="_Save as" Foreground="Black" Click="SaveFileAs"/>
                     <Separator/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>
-                
+                <MenuItem Header="_Edit" BorderBrush="{x:Null}">
+                    <MenuItem Header="_Insert Image" Foreground="Black" Click="InsertImage"/>
+                </MenuItem>
             </Menu>
             <TextBox AcceptsReturn="True" Background="{x:Null}" BorderBrush="{x:Null}" />
         </DockPanel>
 
         <StackPanel Grid.Column="1"
                     Grid.Row="2"
-                    HorizontalAlignment="Center"
-                    Orientation="Horizontal">
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal" Margin="332,0,0,0">
             <Button Click="StartProgram">
                 <TextBlock Text="Start"/>
             </Button>
@@ -57,9 +62,9 @@
                 <TextBlock Text="Block Editor"/>
             </Button>
         </StackPanel>
-        
-        
-        
+
+
+
 
 
         <RichTextBox x:Name="scriptCode" 
@@ -67,13 +72,26 @@
                      Grid.Row="3" 
                      Background="#FF313131"
                      BorderBrush="{x:Null}"
-                     Foreground="White" AcceptsTab="True">
+                     Foreground="White" AcceptsTab="True" Grid.ColumnSpan="2">
             <RichTextBox.Resources>
                 <Style TargetType="{x:Type Paragraph}">
                     <Setter Property="Margin" Value="0"/>
                 </Style>
             </RichTextBox.Resources>
         </RichTextBox>
-        
+
+        <TextBlock Text="Assets:"
+                   Foreground="White"
+                   Grid.Column="1"
+                   Grid.Row="4"
+                   Grid.ColumnSpan="2"
+            />
+        <ListBox x:Name="AssetsList"
+                 Grid.Column="1"
+                 Grid.Row="5"
+                 Grid.ColumnSpan="2"
+                 Background="#FF313131"
+                 Foreground="White"/>
+
     </Grid>
 </Window>
