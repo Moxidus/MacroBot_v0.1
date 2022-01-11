@@ -38,7 +38,6 @@ namespace MacroBot_v0._1
         {
             int screenWidth = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
             int screenHeight = (int)System.Windows.SystemParameters.PrimaryScreenHeight;
-
             using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
             {
                 using (Graphics gr = Graphics.FromImage(bmp))

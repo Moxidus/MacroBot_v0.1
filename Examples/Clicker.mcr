@@ -1,6 +1,3 @@
-FOR i = 0 TO 20 STEP 0.05 THEN
-DELAY(100)
-PRESS(VK_A);
-PRINT(i)
-END
+START("notepad.exe")
+
 
