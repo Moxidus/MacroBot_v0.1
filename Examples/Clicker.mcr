@@ -1,5 +1,3 @@
+START("notepad.exe")
 
-IF TRUE THEN
-PRINT("aa")
-ELSE
-PRINT("bb")
+

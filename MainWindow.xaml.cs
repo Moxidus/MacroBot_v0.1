@@ -120,15 +120,15 @@ namespace MacroBot_v0._1
                 pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
                 pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
                 pProcess.StartInfo.UseShellExecute = false;
-                //pProcess.StartInfo.RedirectStandardOutput = true;
+                pProcess.StartInfo.RedirectStandardOutput = true;
                 pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
                 pProcess.StartInfo.CreateNoWindow = false; //not diplay a windows
                 pProcess.Start();
-                //output = pProcess.StandardOutput.ReadToEnd(); //The output result
+                output = pProcess.StandardOutput.ReadToEnd(); //The output result
                 pProcess.WaitForExit();
             }
 
-            //MessageBox.Show(output);
+            MessageBox.Show(output);
         }
 
         private void SaveFile(object sender, RoutedEventArgs e)
