@@ -1,0 +1,73 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:z="clr-namespace:grabbableBlocks.CustomControls"
+                    xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
+
+    <Style TargetType="local:ContentBlockIfPack">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ContentBlockIfPack" >
+                    <StackPanel Orientation="Vertical"
+                                Margin=" 10 0 0 0"
+                                x:Name="PART_IfsStack">
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="add IF-Else"
+                                    x:Name="PART_AddIEButton"/>
+                            <Button Content="Remove IF-Else"
+                                    x:Name="PART_RemoveIEButton"/>
+                            <CheckBox IsChecked="False" x:Name="PART_ElseEnabled"/>
+                            
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 0 10">
+                            <Label Content="If" />
+                            <!--Condition slot-->
+                            <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 0"
+                                    Orientation="Horizontal" 
+                                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Path=CanvasColor}" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_MainConPanel"/>
+
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 0 10">
+                            <Label Content="Do " />
+                            <!--Do slot-->
+                            <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 0"
+                                    Orientation="Horizontal" 
+                                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Path=CanvasColor}" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_DoDataPanel"/>
+                            
+                        </StackPanel>
+
+
+                        <StackPanel Orientation="Vertical"
+                                Margin=" 10 0 0 0"
+                                Visibility="{TemplateBinding ElseVisible}">
+
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Else" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 0 10">
+                                <Label Content="Do " />
+                                <!--Do slot-->
+                                <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 0"
+                                    Orientation="Horizontal" 
+                                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Path=CanvasColor}" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_ElseDoDataPanel"/>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </StackPanel>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -1,0 +1,8 @@
+VAR a = 0
+WHILE a < 10 THEN
+DELAY(100)
+PRINT("HELLO: " )
+PRINT(a)
+VAR a = a + 1
+
+

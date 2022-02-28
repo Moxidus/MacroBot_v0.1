@@ -15,6 +15,9 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 
 using System.IO;
+using grabbableBlocks.CustomControls;
+using System.Windows.Media;
+using System.Windows.Input;
 
 namespace MacroBot_v0._1
 {
@@ -47,6 +50,8 @@ namespace MacroBot_v0._1
             scriptCode.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             scriptCode.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             scriptCode.Document.PageWidth = 1000;
+
+            VarListBox.ItemsSource = BlockBuildingCanvas.VariableList;
         }
 
 
@@ -127,7 +132,11 @@ namespace MacroBot_v0._1
             using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
             {
                 pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
-                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\" -a \"{PathPara}\""; //argument
+                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
+
+                if(PathPara != "")
+                    pProcess.StartInfo.Arguments += $"-a \"{PathPara}\""; //assets
+
                 pProcess.StartInfo.UseShellExecute = false;
                 pProcess.StartInfo.RedirectStandardOutput = true;
                 pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
@@ -167,6 +176,98 @@ namespace MacroBot_v0._1
                 File.WriteAllText(filename, scriptText);
                 EditingFilePath = filename;
 
+        }
+
+
+
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (sender as Button).RenderTransform = new ScaleTransform(1.05, 1.05);
+        }
+
+        private void Button_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (sender as Button).RenderTransform = new ScaleTransform(1, 1);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            Debug.WriteLine("Clicked: " + btn.Content);
+
+            if (btn.Content.ToString() == "Insert variable block")
+                CreateBlock(new ContentBlockReturnValue(), Color.FromRgb(0, 255, 209), Color.FromRgb(0, 141, 135));
+            else if (btn.Content.ToString() == "Variable select block")
+                CreateBlock(new ContentBlockReturnVar(), Colors.Lime, Color.FromRgb(32, 141, 0));
+            else if (btn.Content.ToString() == "Operation block")
+                CreateBlock(new ContentBlockMathOperation(), Color.FromRgb(209, 0, 255), Color.FromRgb(90, 0, 141));
+            else if (btn.Content.ToString() == "Set variable block")
+                CreateBlock(new ContentBlockSetVar(), Colors.Red, Colors.DarkRed);
+            else if (btn.Content.ToString() == "Not block")
+                CreateBlock(new ContentBlockNot(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Repeat block")
+                CreateBlock(new ContentBlockWhile(), Colors.Yellow, Color.FromRgb(156, 162, 25));
+            else if (btn.Content.ToString() == "Condition block")
+                CreateBlock(new ContentBlockIfPack() { ElseVisible = Visibility.Collapsed }, Color.FromRgb(151, 255, 0), Color.FromRgb(112, 162, 25));
+            else if (btn.Content.ToString() == "Start block")
+                CustomCanvas.Children.Add(new BuildingBlockStart());
+            else if (btn.Content.ToString() == "Start Function")
+                CreateBlock(new ContentBlockStart(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Find Function")
+                CreateBlock(new ContentBlockFind(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Press Function")
+                CreateBlock(new ContentBlockPress(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Click Function")
+                CreateBlock(new ContentBlockClick(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Print Function")
+                CreateBlock(new ContentBlockPrint(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "To String Function")
+                CreateBlock(new ContentBlockToString(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Delay Function")
+                CreateBlock(new ContentBlockDelay(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Mouse move Function")
+                CreateBlock(new ContentBlockMouseMove(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Sin Function")
+                CreateBlock(new ContentBlockSin(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+            else if (btn.Content.ToString() == "Generate code")
+            {
+                foreach (UIElement startCode in CustomCanvas.Children)
+                {
+                    if (startCode.GetType() == typeof(BuildingBlockStart))
+                        Debug.WriteLine((startCode as BuildingBlockStart).GetCode());
+                }
+            }
+            else if (btn.Content.ToString() == "Add variable")
+            {
+                if (VarNameTextBox.Text == "" || VarNameTextBox.Text.Contains(' ') || VarListBox.Items.Contains(VarNameTextBox.Text)) return;
+                BlockBuildingCanvas.VariableList.Add(VarNameTextBox.Text);
+                VarNameTextBox.Text = "";
+            }
+            else if (btn.Content.ToString() == "Delete variable")
+            {
+                BlockBuildingCanvas.VariableList.Remove(VarListBox.SelectedItem.ToString());
+            }
+
+        }
+
+        private void CreateBlock(ContentBlock content, Color backColor, Color BorderColor)
+        {
+            BuildingBlock block = new BuildingBlock()
+            {
+                MainContent = content,
+                BlockColor = new SolidColorBrush(backColor),
+                BorderColor = new SolidColorBrush(BorderColor),
+                Foreground = new SolidColorBrush(Colors.White)
+            };
+            CustomCanvas.Children.Add(block);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (BlockCanvas.Visibility == Visibility.Collapsed)
+                BlockCanvas.Visibility = Visibility.Visible;
+            else
+                BlockCanvas.Visibility = Visibility.Collapsed;
         }
     }
 }

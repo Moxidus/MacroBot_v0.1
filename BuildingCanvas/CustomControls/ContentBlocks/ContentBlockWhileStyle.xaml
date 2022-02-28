@@ -1,0 +1,27 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
+
+    <Style TargetType="local:ContentBlockWhile">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ContentBlockWhile">
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Repeat While" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="DO " />
+                            <!--Do slot-->
+                            <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 10"
+                                    Orientation="Horizontal" 
+                                    Background="{TemplateBinding CanvasColor}" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_DoDataPanel"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

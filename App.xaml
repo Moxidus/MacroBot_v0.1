@@ -5,7 +5,27 @@
              Startup="Application_Startup"
     >
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/BuildingBlockStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnVarStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockSetVarStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnValueStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockMathOperationStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockNotStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockWhileStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockIfPackStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockPrintStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockDelayStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockToStringStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockMouseMoveStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockSinStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockPressStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockClickStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockStartStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockFindStyle.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
 

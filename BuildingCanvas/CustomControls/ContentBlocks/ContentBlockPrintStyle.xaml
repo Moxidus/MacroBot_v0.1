@@ -1,0 +1,32 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
+
+    <Style TargetType="local:ContentBlockPrint">
+        <Setter Property="Template">
+            <Setter.Value>
+
+                <ControlTemplate TargetType="local:ContentBlockPrint" >
+
+                    <StackPanel Orientation="Vertical"
+                                Margin=" 10 0 0 0">
+                        <Label Content="Print"/>
+                        <StackPanel Orientation="Horizontal"
+                                    Margin="0 0 0 10">
+                            <Label Content="Text" />
+                            <!--TextParamater slot-->
+                            <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 0"
+                                    Orientation="Horizontal" 
+                                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Path=CanvasColor}" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_TextToPrintStack"/>
+
+                        </StackPanel>
+                       
+                    </StackPanel>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

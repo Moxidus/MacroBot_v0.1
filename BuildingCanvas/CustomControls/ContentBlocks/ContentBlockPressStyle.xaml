@@ -1,0 +1,18 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
+
+    <Style TargetType="local:ContentBlockPress">
+        <Setter Property="Template">
+            <Setter.Value>
+
+                <ControlTemplate TargetType="local:ContentBlockPress" >
+                    <StackPanel Orientation="Vertical"
+                                Margin=" 10 0 0 0">
+                        <Label Content="Press"/>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

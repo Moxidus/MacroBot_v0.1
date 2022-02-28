@@ -1,0 +1,46 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
+
+    <Style TargetType="local:ContentBlockMathOperation">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:ContentBlockMathOperation">
+                    <StackPanel Orientation="Horizontal">
+
+                        <!--Left slot-->
+                        <StackPanel MinHeight="25" MinWidth="25" Height="Auto" Margin="5"
+                                    Orientation="Horizontal" 
+                                    Background="#7F7D20EC"
+                                    AllowDrop="True" 
+                                    x:Name="PART_LeftDataPanel"/> 
+
+                        <ComboBox MinWidth="60" MaxHeight="19" Margin="0 2 0 0" VerticalAlignment="Top"
+                                  x:Name="PART_Combobox">
+                            <ComboBoxItem Content="+"/>
+                            <ComboBoxItem Content="-"/>
+                            <ComboBoxItem Content="*"/>
+                            <ComboBoxItem Content="/"/>
+                            <ComboBoxItem Content="^"/>
+                            <ComboBoxItem Content="AND"/>
+                            <ComboBoxItem Content="OR"/>
+                            <ComboBoxItem Content=">"/>
+                            <ComboBoxItem Content=">="/>
+                            <ComboBoxItem Content="=="/>
+                            <ComboBoxItem Content="&lt;"/>
+                            <ComboBoxItem Content="&lt;="/>
+                        </ComboBox>
+
+                        <!--Right slot-->
+                        <StackPanel MinHeight="25" MinWidth="25" Height="Auto" Margin="5"
+                                    Orientation="Horizontal" 
+                                    Background="#7F7D20EC" 
+                                    AllowDrop="True" 
+                                    x:Name="PART_RightDataPanel"/>
+                    </StackPanel>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
