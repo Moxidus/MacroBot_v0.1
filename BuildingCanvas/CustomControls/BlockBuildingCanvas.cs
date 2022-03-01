@@ -167,11 +167,12 @@ namespace grabbableBlocks.CustomControls
                 return;
 
 
-            oldParent.Children.Remove(DraggedObject);
-
-            DraggedObject.ReturnNobVis = Visibility.Collapsed;
-
-            newParent.Children.Add(DraggedObject);
+            if (newParent.Children.Count == 0)
+            {
+                oldParent.Children.Remove(DraggedObject);
+                DraggedObject.ReturnNobVis = Visibility.Collapsed;
+                newParent.Children.Add(DraggedObject);
+            }
 
         }
 

@@ -18,7 +18,7 @@ namespace grabbableBlocks.CustomControls
 
         public string GetCode()
         {
-            string result = "CLICK()\n";
+            string result = "CLICK()";
             return result;
 
         }

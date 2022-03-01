@@ -57,7 +57,14 @@ namespace grabbableBlocks.CustomControls
                 rightCode = "FALSE";
             }
 
-            return $"{leftCode} {(comboxOperator.SelectedItem as ComboBoxItem).Content} {rightCode}";
+            string operation = "+";
+            ComboBoxItem item = comboxOperator.SelectedItem as ComboBoxItem;
+            if (item != null)
+            {
+                operation = item.Content.ToString();
+            }
+
+            return $"{leftCode} {operation} {rightCode}";
 
 
         }

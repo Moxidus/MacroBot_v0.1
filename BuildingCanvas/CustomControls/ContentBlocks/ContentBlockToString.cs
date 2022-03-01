@@ -20,7 +20,7 @@ namespace grabbableBlocks.CustomControls
         {
             string result = "TO_STRING(";
             result += BlockParent.GetInputData();
-            result += ")\n";
+            result += ")";
             return result;
 
         }

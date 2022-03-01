@@ -30,9 +30,9 @@ namespace grabbableBlocks.CustomControls
             result += " THEN \n";
 
             if (DOValuePanel.Children.Count > 0)
-                result += ((DOValuePanel.Children[0] as BuildingBlock).MainContent as ICode).GetCode();
+                result += (DOValuePanel.Children[0] as BuildingBlock).GetCode();
             else
-                result += "FALSE";
+                result += "\"Empty\"";
 
             result += "\nEND";
 

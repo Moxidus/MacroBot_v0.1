@@ -25,7 +25,7 @@ namespace grabbableBlocks.CustomControls
         {
             string result = "DELAY(";
             result += BlockParent.GetInputData();
-            result += ")\n";
+            result += ")";
             return result;
 
         }

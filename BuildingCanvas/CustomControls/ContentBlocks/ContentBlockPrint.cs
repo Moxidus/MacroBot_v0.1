@@ -32,7 +32,7 @@ namespace grabbableBlocks.CustomControls
             result += (TextToPrintStack.Children[0] as BuildingBlock).GetCode();
 
 
-            result += ")\n";
+            result += ")";
             return result;
 
         }

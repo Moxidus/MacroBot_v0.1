@@ -225,7 +225,7 @@ namespace grabbableBlocks.CustomControls
 
 
 
-            result += "END\n";
+            result += "END";
 
             return result;
 
