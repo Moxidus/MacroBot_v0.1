@@ -15,7 +15,7 @@ namespace MacroBot_v0._1
         }
 
         public readonly Image<Bgr, byte> asset;
-        public readonly string name;
+        public string name;
 
         public override string ToString()
         {

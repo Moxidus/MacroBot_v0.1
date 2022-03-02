@@ -14,10 +14,11 @@ using System.Windows.Documents;
 using Emgu.CV;
 using Emgu.CV.Structure;
 
-using System.IO;
 using grabbableBlocks.CustomControls;
 using System.Windows.Media;
 using System.Windows.Input;
+using System.Windows.Threading;
+using System.Windows.Media.Animation;
 
 namespace MacroBot_v0._1
 {
@@ -58,7 +59,25 @@ namespace MacroBot_v0._1
 
         public void InsertImage(object sender, RoutedEventArgs e)
         {
-            AssetsList.Items.Add(new AssetItem(SnipMaker.takeSnip(), "Image01"));//TODO: Make main window hide when screenshoting
+            Hide();
+            
+            Application.Current.Dispatcher.Invoke(delegate {
+                Thread.Sleep(300);//waits for window to hide
+
+                AssetItem screenCrop = new AssetItem(SnipMaker.takeSnip(), "Image01");
+                if (screenCrop.asset == null)
+                    return;
+
+                changeNameDialog nameDialog = new changeNameDialog();
+                screenCrop.name = nameDialog.GetName();
+
+                AssetsList.Items.Add(screenCrop);
+                BlockBuildingCanvas.VariableList.Add(screenCrop.ToString());
+            });
+
+
+
+            Show();
         }
 
         public void createNew(object sender, RoutedEventArgs e)
@@ -172,9 +191,9 @@ namespace MacroBot_v0._1
 
             string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
 
-                string filename = EditingFilePath;
-                File.WriteAllText(filename, scriptText);
-                EditingFilePath = filename;
+            string filename = EditingFilePath;
+            File.WriteAllText(filename, scriptText);
+            EditingFilePath = filename;
 
         }
 
@@ -231,11 +250,18 @@ namespace MacroBot_v0._1
                 CreateBlock(new ContentBlockSin(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
             else if (btn.Content.ToString() == "Generate code")
             {
+                scriptCode.Document.Blocks.Clear();
                 foreach (UIElement startCode in CustomCanvas.Children)
                 {
                     if (startCode.GetType() == typeof(BuildingBlockStart))
-                        Debug.WriteLine((startCode as BuildingBlockStart).GetCode());
+                    {
+                        string code = (startCode as BuildingBlockStart).GetCode();
+                        Debug.WriteLine(code);
+                        scriptCode.Document.Blocks.Add(new Paragraph(new Run(code)));
+
+                    }
                 }
+
             }
             else if (btn.Content.ToString() == "Add variable")
             {
