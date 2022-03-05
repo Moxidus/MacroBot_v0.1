@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -46,6 +47,17 @@ namespace grabbableBlocks.CustomControls
             result += ")";
             return result;
 
+        }
+        public new SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
+
+            content.BlockList = new SingleBlock[2];
+            content.BlockList[0] = GetBuildingBlockOrNull(XStack).GetData();
+            content.BlockList[1] = GetBuildingBlockOrNull(YStack).GetData();
+
+            return content;
         }
     }
 }

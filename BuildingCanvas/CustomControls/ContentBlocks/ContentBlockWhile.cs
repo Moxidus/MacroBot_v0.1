@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -29,14 +30,19 @@ namespace grabbableBlocks.CustomControls
             result += BlockParent.GetInputData();
             result += " THEN \n";
 
-            if (DOValuePanel.Children.Count > 0)
-                result += (DOValuePanel.Children[0] as BuildingBlock).GetCode();
-            else
-                result += "\"Empty\"";
-
-            result += "\nEND";
+            result += GetBuildingBlockOrNull(DOValuePanel) == null? "\"Empty\"": GetBuildingBlockOrNull(DOValuePanel).GetCode();
 
             return result;
+        }
+
+        public new SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
+            content.BlockList = new SingleBlock[1];
+            content.BlockList[0] = GetBuildingBlockOrNull(DOValuePanel).GetData();
+
+            return content;
         }
 
     }

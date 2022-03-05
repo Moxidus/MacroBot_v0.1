@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -33,29 +34,9 @@ namespace grabbableBlocks.CustomControls
 
         public string GetCode()
         {
-            string leftCode;
+            string leftCode = GetBuildingBlockOrNull(LeftValuePanel) == null ? "FALSE" : GetBuildingBlockOrNull(LeftValuePanel).GetCode();
 
-            if(LeftValuePanel.Children.Count > 0)
-            {
-                BuildingBlock leftBlock = LeftValuePanel.Children[0] as BuildingBlock;
-                leftCode = (leftBlock.MainContent as ICode).GetCode();
-            }
-            else
-            {
-                leftCode = "FALSE";
-            }
-
-            string rightCode;
-
-            if (RightValuePanel.Children.Count > 0)
-            {
-                BuildingBlock RightBlock = RightValuePanel.Children[0] as BuildingBlock;
-                rightCode = (RightBlock.MainContent as ICode).GetCode();
-            }
-            else
-            {
-                rightCode = "FALSE";
-            }
+            string rightCode = GetBuildingBlockOrNull(RightValuePanel) == null ? "FALSE" : GetBuildingBlockOrNull(RightValuePanel).GetCode();
 
             string operation = "+";
             ComboBoxItem item = comboxOperator.SelectedItem as ComboBoxItem;
@@ -65,8 +46,21 @@ namespace grabbableBlocks.CustomControls
             }
 
             return $"{leftCode} {operation} {rightCode}";
+        }
 
+        public new SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
 
+            content.ContentProperties = new object[1];
+            content.ContentProperties[0] = comboxOperator.SelectedItem == null ? "+" : comboxOperator.SelectedItem.ToString();
+
+            content.BlockList = new SingleBlock[2];
+            content.BlockList[0] = GetBuildingBlockOrNull(LeftValuePanel).GetData();
+            content.BlockList[1] = GetBuildingBlockOrNull(RightValuePanel).GetData();
+
+            return content;
         }
 
     }

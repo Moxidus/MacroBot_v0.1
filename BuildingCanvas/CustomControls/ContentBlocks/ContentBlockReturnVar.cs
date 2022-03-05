@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -29,6 +30,16 @@ namespace grabbableBlocks.CustomControls
             if (comboxVar.SelectedItem is null)
                 return "UnselectedVarName";
             return comboxVar.SelectedItem.ToString();
+        }
+        public new SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
+
+            content.ContentProperties = new object[1];
+            content.ContentProperties[1] = comboxVar.SelectedItem;
+
+            return content;
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Windows.Shapes;
 
 namespace grabbableBlocks.CustomControls
 {
+
     class BlockBuildingCanvas : Canvas
     {
         private BuildingBlock DraggedObject;

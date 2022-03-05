@@ -27,7 +27,6 @@ namespace grabbableBlocks.CustomControls
             result += BlockParent.GetInputData();
             result += ")";
             return result;
-
         }
     }
 }

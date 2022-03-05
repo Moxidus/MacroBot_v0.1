@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -20,6 +21,15 @@ namespace grabbableBlocks.CustomControls
         static ContentBlock()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlock), new FrameworkPropertyMetadata(typeof(ContentBlock)));
+        }
+
+        protected BuildingBlock GetBuildingBlockOrNull(StackPanel stack) => stack.Children.Count != 0 ? stack.Children[0] as BuildingBlock : null;
+
+        public SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
+            return content;
         }
     }
 }

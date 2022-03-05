@@ -20,6 +20,10 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
 
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace MacroBot_v0._1
 {
     /// <summary>
@@ -89,6 +93,29 @@ namespace MacroBot_v0._1
 
         public void SaveFileAs(object sender, RoutedEventArgs e)
         {
+            BlockData data = new BlockData();
+            foreach(BuildingBlock b in CustomCanvas.Children)
+            {//TODO: finish recursive data retrival for all content
+                BlockData.SingleBlock block = new BlockData.SingleBlock();
+                block = b.GetData()
+                //block.pos = new Point(Canvas.GetLeft(b), Canvas.GetTop(b));
+                data.Blocks.Add(block);
+            }
+
+            string jsonString = JsonSerializer.Serialize(data);
+
+            Debug.WriteLine(jsonString);
+
+
+            /*
+            using (Stream stream = File.Open(@"C:\temp\idk.mcrb", FileMode.Create))
+            {
+                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                binaryFormatter.Serialize(stream, data);
+            }*/
+
+
+            /*
             string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
 
 
@@ -107,7 +134,7 @@ namespace MacroBot_v0._1
                 File.WriteAllText(filename, scriptText);
                 EditingFilePath = filename;
             }
-
+            */
         }
 
         private void OpenFile(object sender, RoutedEventArgs e)

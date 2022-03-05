@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -84,7 +85,7 @@ namespace grabbableBlocks.CustomControls
         }
 
 
-            List<StackPanel> ifDoList = new List<StackPanel>();
+        List<StackPanel> ifDoList = new List<StackPanel>();
         public StackPanel DOValuePanel { get; private set; }
         public StackPanel ElseDoDataPanel { get; private set; }
         public StackPanel MainConPanel { get; private set; }
@@ -147,8 +148,8 @@ namespace grabbableBlocks.CustomControls
                     if (IfsStack.Children.Contains(ifDoList[i]))
                         continue;
 
-                    (ifDoList[i].Children[1] as StackPanel).Children[1].Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
-                    (ifDoList[i].Children[0] as StackPanel).Children[1].Drop += BlockBuildingCanvas.CanvasInputDropEvent;
+                    GetDoActionStack(i).Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
+                    GetIfConStack(i).Drop += BlockBuildingCanvas.CanvasInputDropEvent;
                     IfsStack.Children.Insert(IfsStack.Children.Count - 1, ifDoList[i]);
                 }
             }
@@ -229,6 +230,40 @@ namespace grabbableBlocks.CustomControls
 
             return result;
 
+        }
+
+        private StackPanel GetIfConStack(int index)=> (ifDoList[index].Children[0] as StackPanel).Children[1] as StackPanel;
+        private StackPanel GetDoActionStack(int index)=> (ifDoList[index].Children[1] as StackPanel).Children[1] as StackPanel;
+
+
+        public new SingleContent GetData()
+        {
+            SingleContent content = new SingleContent();
+            content.ContentType = GetType().ToString();
+
+            int contentNumber = 2 + 2*ifDoList.Count;
+            if (ElseEnabled.IsChecked.Value == true)
+                contentNumber++;
+            content.BlockList = new SingleBlock[contentNumber];
+
+            content.BlockList[0] = GetBuildingBlockOrNull(MainConPanel).GetData();//primary if condition panel
+            content.BlockList[0] = GetBuildingBlockOrNull(DOValuePanel).GetData();//primary if condition panel
+
+            for(int i = 0; i < ifDoList.Count; i++)
+            {
+                content.BlockList[i + 2] = GetBuildingBlockOrNull(GetIfConStack(i)).GetData();
+                content.BlockList[i + 3] = GetBuildingBlockOrNull(GetDoActionStack(i)).GetData();
+            }
+
+            content.ContentProperties = new object[2];
+
+            //else is Enabled
+            content.ContentProperties[0] = ElseEnabled.IsChecked.Value;
+            //number of else ifs
+            content.ContentProperties[1] = ifDoList.Count;
+
+
+            return content;
         }
     }
 }

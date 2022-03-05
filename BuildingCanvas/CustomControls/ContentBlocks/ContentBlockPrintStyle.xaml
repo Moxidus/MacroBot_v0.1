@@ -5,26 +5,10 @@
     <Style TargetType="local:ContentBlockPrint">
         <Setter Property="Template">
             <Setter.Value>
-
-                <ControlTemplate TargetType="local:ContentBlockPrint" >
-
-                    <StackPanel Orientation="Vertical"
-                                Margin=" 10 0 0 0">
-                        <Label Content="Print"/>
-                        <StackPanel Orientation="Horizontal"
-                                    Margin="0 0 0 10">
-                            <Label Content="Text" />
-                            <!--TextParamater slot-->
-                            <StackPanel MinHeight="25" MinWidth="60" Height="Auto" Width="auto" Margin=" 0 0 0 0"
-                                    Orientation="Horizontal" 
-                                    Background="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Path=CanvasColor}" 
-                                    AllowDrop="True" 
-                                    x:Name="PART_TextToPrintStack"/>
-
-                        </StackPanel>
-                       
+                <ControlTemplate TargetType="local:ContentBlockPrint">
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Print" />
                     </StackPanel>
-
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

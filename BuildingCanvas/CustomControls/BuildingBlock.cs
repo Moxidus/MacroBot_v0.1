@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -207,5 +208,25 @@ namespace grabbableBlocks.CustomControls
                 return result + "\n" + (NextBlock as BuildingBlock).GetCode();
             return result;
         }
+
+        public SingleBlock GetData()
+        {
+            SingleBlock block = new SingleBlock();
+
+            if (inputDataPanel.Children.Count != 0)
+                block.Inputcontent = (inputDataPanel.Children[0] as BuildingBlock).GetData();
+
+            if (nextCommandPanel.Children.Count != 0)
+                block.NextContent = (nextCommandPanel.Children[0] as BuildingBlock).GetData();
+
+            if (inputDataPanel.Children.Count != 0)
+                block.InsideContent = (MainContent as ContentBlock).GetData();
+
+            block.Pos = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
+
+            return block;
+        }
+
+
     }
 }
