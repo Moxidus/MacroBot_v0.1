@@ -31,7 +31,7 @@
         <TextBox FontFamily="Dubai" FontSize="16" Margin="10"
                  Grid.Column="1" Grid.Row="1"
                  BorderThickness="3"
-                 x:Name="VarNameTextBox"/>
+                 x:Name="VarNameTextBox" KeyUp="VarNameTextBox_KeyUp"/>
 
         <Button Grid.Column="1" Grid.Row="3"
                 Margin="15 3 15 3"

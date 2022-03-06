@@ -24,6 +24,9 @@ using System.Windows.Media.Animation;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using static MacroBot_v0._1.BlockData;
+using static MacroBot_v0._1.SaveAsQuestionWindow;
+using System.Runtime.InteropServices;
+using Emgu.CV.CvEnum;
 
 namespace MacroBot_v0._1
 {
@@ -33,7 +36,7 @@ namespace MacroBot_v0._1
     public partial class MainWindow : Window
     {
         private string editingFilePath = "";
-        private bool blockEditingEnabled = false;
+        private SaveType? SaveAsType;
         public string EditingFilePath
         {
             get
@@ -50,23 +53,21 @@ namespace MacroBot_v0._1
                     this.Title = "Macro Bot" + " - " + editingFilePath;
             }
         }
-
         public MainWindow(string[] Args)
         {
             InitializeComponent();
             scriptCode.HorizontalScrollBarVisibility = ScrollBarVisibility.Auto;
             scriptCode.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             scriptCode.Document.PageWidth = 1000;
+            scriptCode.Document.Blocks.Clear();
 
             VarListBox.ItemsSource = BlockBuildingCanvas.VariableList;
         }
 
-
-
         public void InsertImage(object sender, RoutedEventArgs e)
         {
             Hide();
-            
+
             Application.Current.Dispatcher.Invoke(delegate {
                 Thread.Sleep(300);//waits for window to hide
 
@@ -88,11 +89,53 @@ namespace MacroBot_v0._1
         public void createNew(object sender, RoutedEventArgs e)
         {
             SaveFile(sender, e);
+            deleteImages();
             scriptCode.Document.Blocks.Clear();
-            editingFilePath = "";
+            EditingFilePath = "";
         }
 
-        public void SaveFileAsBlock(object sender, RoutedEventArgs e)
+        private void deleteImages()
+        {
+            foreach (AssetItem item in AssetsList.Items)
+            {
+                item.asset.Dispose();
+            }
+            AssetsList.Items.Clear();
+        }
+
+        private void SaveAsDialog(object sender, RoutedEventArgs e)
+        {
+            SaveAsQuestionWindow DialogSaveAs = new SaveAsQuestionWindow();
+            SaveAsType = DialogSaveAs.SaveAsQuestionDialog(this);
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            if (SaveAsType == SaveType.SaveBlock)
+            {
+                dlg.FileName = "MacroBlock"; // Default file name
+                dlg.DefaultExt = ".mcrb"; // Default file extension
+                dlg.Filter = "Macro script file (.mcrb)|*.mcrb"; // Filter files by extension
+            }
+            else if (SaveAsType == SaveType.SaveScript)
+            {
+                dlg.FileName = "MacroScript"; // Default file name
+                dlg.DefaultExt = ".mcr"; // Default file extension
+                dlg.Filter = "Macro script file (.mcr)|*.mcr"; // Filter files by extension
+            }
+            else
+                return;
+
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
+
+            string jsonString = SaveFileAsBlock();
+            // Process save file dialog box results
+            if (result == true)
+            {
+                string filename = dlg.FileName;
+                File.WriteAllText(filename, jsonString);
+                EditingFilePath = filename;
+            }
+        }
+        public string SaveFileAsBlock()
         {
             BlockData data = new BlockData();
 
@@ -100,7 +143,7 @@ namespace MacroBot_v0._1
             for (int i = 0; i < AssetsList.Items.Count; i++)
             {
                 AssetItem item = AssetsList.Items[i] as AssetItem;
-                data.savedImages[i] =new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
+                data.savedImages[i] = new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
             }
 
 
@@ -111,51 +154,30 @@ namespace MacroBot_v0._1
                 data.Blocks.Add(block);
             }
 
-            string jsonString = JsonSerializer.Serialize(data);//TODO: wide images wont serialize
-                      
-
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "MacroBlock"; // Default file name
-            dlg.DefaultExt = ".mcrb"; // Default file extension
-            dlg.Filter = "Macro script file (.mcrb)|*.mcrb"; // Filter files by extension
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
-            {
-                string filename = dlg.FileName;
-                File.WriteAllText(filename, jsonString);
-                EditingFilePath = filename;
-            }
+            return JsonSerializer.Serialize(data);
         }
+        public string SaveFileAsText()
+        {
+            ScriptData data = new ScriptData();
 
-        public void SaveFileAsText(object sender, RoutedEventArgs e)
-        {            
-            string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
-
-
-            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-            dlg.FileName = "MacroScript"; // Default file name
-            dlg.DefaultExt = ".mcr"; // Default file extension
-            dlg.Filter = "Macro script file (.mcr)|*.mcr"; // Filter files by extension
-
-            // Show save file dialog box
-            Nullable<bool> result = dlg.ShowDialog();
-
-            // Process save file dialog box results
-            if (result == true)
+            data.savedImages = new AssetHolder[AssetsList.Items.Count];
+            for (int i = 0; i < AssetsList.Items.Count; i++)
             {
-                string filename = dlg.FileName;
-                File.WriteAllText(filename, scriptText);
-                EditingFilePath = filename;
+                AssetItem item = AssetsList.Items[i] as AssetItem;
+                data.savedImages[i] = new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
             }
-        }
 
+            data.script = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
+
+            return JsonSerializer.Serialize(data);
+
+        }
 
         private void OpenFile(object sender, RoutedEventArgs e)
         {
+            if (AssetsList.Items.Count != 0 || CustomCanvas.Children.Count != 0 || scriptCode.Document.Blocks.Count != 0)
+                createNew(sender, e);
+
 
             Microsoft.Win32.OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
             openFile.DefaultExt = ".mcr"; // Default file extension
@@ -174,26 +196,41 @@ namespace MacroBot_v0._1
             if (Path.GetExtension(path) == ".mcrb")
                 LoaderMCRB(path);
             else
-                LoaderMCR(path);                     
+                LoaderMCR(path);
         }
 
         private void LoaderMCR(string pwd)
         {
+            SaveAsType = SaveType.SaveScript;
+            ScriptData data = new ScriptData();
             try
             {
-                string scriptText = File.ReadAllText(pwd);
+                string jsonText = File.ReadAllText(pwd);
 
-                scriptCode.Document.Blocks.Clear();
-                scriptCode.Document.Blocks.Add(new Paragraph(new Run(scriptText)));
+                data = JsonSerializer.Deserialize(jsonText, typeof(ScriptData)) as ScriptData;
             }
             catch (Exception ex)// This is here incase there is error with the file name
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+
+            scriptCode.Document.Blocks.Clear();
+            scriptCode.Document.Blocks.Add(new Paragraph(new Run(data.script)));
+
+            foreach (AssetHolder item in data.savedImages)
+            {
+                Image<Bgr, byte> img = new Image<Bgr, byte>(item.AssetSize);
+                img.Bytes = item.AssetBytes;
+                AssetItem newAsset = new AssetItem(img, item.AssetName);
+
+                AssetsList.Items.Add(newAsset);
+                BlockBuildingCanvas.VariableList.Add(newAsset.ToString());
+            }
         }
 
         private void LoaderMCRB(string pwd)
         {
+            SaveAsType = SaveType.SaveBlock;
             BlockData data = new BlockData();
             try
             {
@@ -206,11 +243,22 @@ namespace MacroBot_v0._1
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
-            AssetsList.Items.Clear();
             foreach (AssetHolder item in data.savedImages)
             {
-                Image<Bgr, byte> img = new Image<Bgr, byte>(item.AssetSize);
-                img.Bytes = item.AssetBytes;
+                //------------------------------------------WorkAround beacause sometime Image doesnt like my bytes
+                Mat currentMat;
+
+                GCHandle rawDataHandle = GCHandle.Alloc(item.AssetBytes, GCHandleType.Pinned);
+                IntPtr address = rawDataHandle.AddrOfPinnedObject();
+
+                currentMat = new Mat(new System.Drawing.Size(item.AssetSize.Width, item.AssetSize.Height), DepthType.Cv8U, 1, address, item.AssetSize.Width);
+                rawDataHandle.Free();
+
+                Image<Bgr, byte> img = currentMat.ToImage<Bgr, byte>();
+
+                //----------------------------------------------------------
+
+                //img.Bytes = item.AssetBytes;//I'm very disappointed in you!
                 AssetItem newAsset = new AssetItem(img, item.AssetName);
 
                 AssetsList.Items.Add(newAsset);
@@ -234,7 +282,7 @@ namespace MacroBot_v0._1
                 pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
                 pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
 
-                if(PathPara != "")
+                if (PathPara != "")
                     pProcess.StartInfo.Arguments += $"-a \"{PathPara}\""; //assets
 
                 pProcess.StartInfo.UseShellExecute = false;
@@ -252,7 +300,7 @@ namespace MacroBot_v0._1
         {
             List<string> allAssetsPath = new List<string>();
             string tempFileLoc = Path.GetTempPath();
-            foreach(AssetItem item in AssetsList.Items)
+            foreach (AssetItem item in AssetsList.Items)
             {
                 string path = tempFileLoc + item.name + ".jpg";
                 item.asset.Save(path);
@@ -264,20 +312,14 @@ namespace MacroBot_v0._1
 
         private void SaveFile(object sender, RoutedEventArgs e)
         {
-            if (EditingFilePath == "")
+            if (SaveAsType == null || EditingFilePath == "")
             {
-                if (blockEditingEnabled)
-                    SaveFileAsBlock(sender, e);
-                else
-                    SaveFileAsText(sender, e);
-                return;
+                SaveAsDialog(sender, e);
             }
-
-            string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
-
-            string filename = EditingFilePath;
-            File.WriteAllText(filename, scriptText);
-            EditingFilePath = filename;
+            else if(SaveAsType == SaveType.SaveBlock)
+                File.WriteAllText(EditingFilePath, SaveFileAsBlock());
+            else
+                File.WriteAllText(EditingFilePath, SaveFileAsText());
 
         }
 
@@ -367,16 +409,15 @@ namespace MacroBot_v0._1
                 BorderColor = new SolidColorBrush(BorderColor),
                 Foreground = new SolidColorBrush(Colors.White)
             };
+            Canvas.SetLeft(block, 50);
+            Canvas.SetTop(block, 50);
             CustomCanvas.Children.Add(block);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             if (BlockCanvas.Visibility == Visibility.Collapsed)
-            {
-                blockEditingEnabled = true;
                 BlockCanvas.Visibility = Visibility.Visible;
-            }
             else
                 BlockCanvas.Visibility = Visibility.Collapsed;
         }

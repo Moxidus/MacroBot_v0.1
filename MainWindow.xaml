@@ -44,9 +44,7 @@
                     <MenuItem Header="_New" Foreground="Black" Click="createNew"/>
                     <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
                     <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
-                    <MenuItem Header="_Save as Block" Foreground="Black" Click="SaveFileAsBlock"/>
-                    <MenuItem Header="_Save as Script" Foreground="Black" Click="SaveFileAsText"/>
-                    <Separator/>
+                    <MenuItem Header="_Save as" Foreground="Black" Click="SaveAsDialog"/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>
                 <MenuItem Header="_Edit" BorderBrush="{x:Null}">
@@ -73,11 +71,6 @@
                      Background="#FF313131"
                      BorderBrush="{x:Null}"
                      Foreground="White" AcceptsTab="True" Grid.ColumnSpan="4">
-            <RichTextBox.Resources>
-                <Style TargetType="{x:Type Paragraph}">
-                    <Setter Property="Margin" Value="0"/>
-                </Style>
-            </RichTextBox.Resources>
         </RichTextBox>
 
         <TextBlock Text="Assets:"

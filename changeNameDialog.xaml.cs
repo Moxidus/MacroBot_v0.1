@@ -28,6 +28,7 @@ namespace MacroBot_v0._1
         /// <returns>Returns variable name in form of string</returns>
         public string GetName()
         {
+            VarNameTextBox.Focus();
             if(ShowDialog() == true)
             {
                 return VarNameTextBox.Text;
@@ -37,6 +38,14 @@ namespace MacroBot_v0._1
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            DialogResult = true;
+            Close();
+        }
+
+        private void VarNameTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Enter)
+                return;
             DialogResult = true;
             Close();
         }
