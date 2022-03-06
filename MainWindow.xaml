@@ -44,7 +44,8 @@
                     <MenuItem Header="_New" Foreground="Black" Click="createNew"/>
                     <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
                     <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
-                    <MenuItem Header="_Save as" Foreground="Black" Click="SaveFileAs"/>
+                    <MenuItem Header="_Save as Block" Foreground="Black" Click="SaveFileAsBlock"/>
+                    <MenuItem Header="_Save as Script" Foreground="Black" Click="SaveFileAsText"/>
                     <Separator/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>

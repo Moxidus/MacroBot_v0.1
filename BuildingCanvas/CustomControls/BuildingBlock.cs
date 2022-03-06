@@ -219,8 +219,7 @@ namespace grabbableBlocks.CustomControls
             if (nextCommandPanel.Children.Count != 0)
                 block.NextContent = (nextCommandPanel.Children[0] as BuildingBlock).GetData();
 
-            if (inputDataPanel.Children.Count != 0)
-                block.InsideContent = (MainContent as ContentBlock).GetData();
+            block.InsideContent = (MainContent as ContentBlock).GetData();
 
             block.Pos = new Point(Canvas.GetLeft(this), Canvas.GetTop(this));
 

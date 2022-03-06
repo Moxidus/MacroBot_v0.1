@@ -23,6 +23,7 @@ using System.Windows.Media.Animation;
 
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using static MacroBot_v0._1.BlockData;
 
 namespace MacroBot_v0._1
 {
@@ -32,6 +33,7 @@ namespace MacroBot_v0._1
     public partial class MainWindow : Window
     {
         private string editingFilePath = "";
+        private bool blockEditingEnabled = false;
         public string EditingFilePath
         {
             get
@@ -83,7 +85,6 @@ namespace MacroBot_v0._1
 
             Show();
         }
-
         public void createNew(object sender, RoutedEventArgs e)
         {
             SaveFile(sender, e);
@@ -91,31 +92,47 @@ namespace MacroBot_v0._1
             editingFilePath = "";
         }
 
-        public void SaveFileAs(object sender, RoutedEventArgs e)
+        public void SaveFileAsBlock(object sender, RoutedEventArgs e)
         {
             BlockData data = new BlockData();
-            foreach(BuildingBlock b in CustomCanvas.Children)
-            {//TODO: finish recursive data retrival for all content
-                BlockData.SingleBlock block = new BlockData.SingleBlock();
-                block = b.GetData()
-                //block.pos = new Point(Canvas.GetLeft(b), Canvas.GetTop(b));
+
+            data.savedImages = new AssetHolder[AssetsList.Items.Count];
+            for (int i = 0; i < AssetsList.Items.Count; i++)
+            {
+                AssetItem item = AssetsList.Items[i] as AssetItem;
+                data.savedImages[i] =new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
+            }
+
+
+            foreach (BuildingBlock b in CustomCanvas.Children)
+            {
+                SingleBlock block = new SingleBlock();
+                block = b.GetData();
                 data.Blocks.Add(block);
             }
 
-            string jsonString = JsonSerializer.Serialize(data);
+            string jsonString = JsonSerializer.Serialize(data);//TODO: wide images wont serialize
+                      
 
-            Debug.WriteLine(jsonString);
+            Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.FileName = "MacroBlock"; // Default file name
+            dlg.DefaultExt = ".mcrb"; // Default file extension
+            dlg.Filter = "Macro script file (.mcrb)|*.mcrb"; // Filter files by extension
 
+            // Show save file dialog box
+            Nullable<bool> result = dlg.ShowDialog();
 
-            /*
-            using (Stream stream = File.Open(@"C:\temp\idk.mcrb", FileMode.Create))
+            // Process save file dialog box results
+            if (result == true)
             {
-                var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                binaryFormatter.Serialize(stream, data);
-            }*/
+                string filename = dlg.FileName;
+                File.WriteAllText(filename, jsonString);
+                EditingFilePath = filename;
+            }
+        }
 
-
-            /*
+        public void SaveFileAsText(object sender, RoutedEventArgs e)
+        {            
             string scriptText = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
 
 
@@ -134,26 +151,37 @@ namespace MacroBot_v0._1
                 File.WriteAllText(filename, scriptText);
                 EditingFilePath = filename;
             }
-            */
         }
+
 
         private void OpenFile(object sender, RoutedEventArgs e)
         {
 
             Microsoft.Win32.OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
             openFile.DefaultExt = ".mcr"; // Default file extension
-            openFile.Filter = "Macro script file (.mcr)|*.mcr"; // Filter files by extension
+            openFile.Filter = "Macro script file |*.mcr;*.mcrb|All files |*.*"; // Filter files by extension
 
             Nullable<bool> results = openFile.ShowDialog();
 
             if (results != true)
                 return;
 
+
+
             string path = openFile.FileName;
             EditingFilePath = path;
+
+            if (Path.GetExtension(path) == ".mcrb")
+                LoaderMCRB(path);
+            else
+                LoaderMCR(path);                     
+        }
+
+        private void LoaderMCR(string pwd)
+        {
             try
             {
-                string scriptText = File.ReadAllText(path);
+                string scriptText = File.ReadAllText(pwd);
 
                 scriptCode.Document.Blocks.Clear();
                 scriptCode.Document.Blocks.Add(new Paragraph(new Run(scriptText)));
@@ -161,6 +189,32 @@ namespace MacroBot_v0._1
             catch (Exception ex)// This is here incase there is error with the file name
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void LoaderMCRB(string pwd)
+        {
+            BlockData data = new BlockData();
+            try
+            {
+                string jsonText = File.ReadAllText(pwd);
+
+                data = JsonSerializer.Deserialize(jsonText, typeof(BlockData)) as BlockData;
+            }
+            catch (Exception ex)// This is here incase there is error with the file name
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            AssetsList.Items.Clear();
+            foreach (AssetHolder item in data.savedImages)
+            {
+                Image<Bgr, byte> img = new Image<Bgr, byte>(item.AssetSize);
+                img.Bytes = item.AssetBytes;
+                AssetItem newAsset = new AssetItem(img, item.AssetName);
+
+                AssetsList.Items.Add(newAsset);
+                BlockBuildingCanvas.VariableList.Add(newAsset.ToString());
             }
         }
 
@@ -212,7 +266,10 @@ namespace MacroBot_v0._1
         {
             if (EditingFilePath == "")
             {
-                SaveFileAs(sender, e);
+                if (blockEditingEnabled)
+                    SaveFileAsBlock(sender, e);
+                else
+                    SaveFileAsText(sender, e);
                 return;
             }
 
@@ -223,8 +280,6 @@ namespace MacroBot_v0._1
             EditingFilePath = filename;
 
         }
-
-
 
         private void Button_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -318,7 +373,10 @@ namespace MacroBot_v0._1
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             if (BlockCanvas.Visibility == Visibility.Collapsed)
+            {
+                blockEditingEnabled = true;
                 BlockCanvas.Visibility = Visibility.Visible;
+            }
             else
                 BlockCanvas.Visibility = Visibility.Collapsed;
         }
