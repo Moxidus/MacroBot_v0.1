@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
@@ -14,10 +15,21 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockWhile), new FrameworkPropertyMetadata(typeof(ContentBlockWhile)));
         }
 
-        public StackPanel DOValuePanel { get; private set; }
-        public override void OnApplyTemplate()
+        public ContentBlockWhile() { }
+        public ContentBlockWhile(SingleContent content)
         {
 
+        }
+
+        public StackPanel DOValuePanel { get; private set; }
+
+        Brush DefaultBlockColor = new SolidColorBrush(Colors.Yellow);
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(156, 162, 25));
+        public override void OnApplyTemplate()
+        {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
+            
             DOValuePanel = (StackPanel)Template.FindName("PART_DoDataPanel", this);
             DOValuePanel.Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
 

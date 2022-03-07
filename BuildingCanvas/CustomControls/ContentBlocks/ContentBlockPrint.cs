@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
@@ -16,6 +17,20 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockPrint), new FrameworkPropertyMetadata(typeof(ContentBlockPrint)));
         }
 
+        public ContentBlockPrint() { }
+        public ContentBlockPrint(SingleContent content)
+        {
+
+        }
+
+        Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(170, 34, 170));
+        public override void OnApplyTemplate()
+        {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
+            base.OnApplyTemplate();
+        }
         public string GetCode()
         {
             string result = "PRINT(";

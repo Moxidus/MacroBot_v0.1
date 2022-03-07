@@ -23,6 +23,11 @@ namespace grabbableBlocks.CustomControls
         public static DragEventHandler CanvasBlockBuildingCanvas_DragEnter;
         public static DragEventHandler CanvasBlockBuildingCanvas_DragLeave;
         public static MouseButtonEventHandler CanvasBlockBuilding_Delete;
+        public static MouseButtonEventHandler CanvasBlockBuilding_MouseMove;
+        public static MouseEventHandler CanvasBlockBuilding_MouseEnter;
+        public static MouseEventHandler CanvasBlockBuilding_MouseLeave;
+
+        public static Brush CanvasColor;
 
         protected override void OnInitialized(EventArgs e)
         {
@@ -38,29 +43,15 @@ namespace grabbableBlocks.CustomControls
             CanvasBlockBuildingCanvas_DragEnter = BlockBuildingCanvas_DragEnter;
             CanvasBlockBuildingCanvas_DragLeave = BlockBuildingCanvas_DragLeave;
             CanvasBlockBuilding_Delete = Block_MouseClick;
+            CanvasBlockBuilding_MouseMove = Block_MouseMove;
+            CanvasBlockBuilding_MouseEnter = Stack_MouseEnter;
+            CanvasBlockBuilding_MouseLeave = Stack_MouseLeave;
+            CanvasColor = Background;
+
             base.OnInitialized(e);
         }
 
 
-        protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
-        {
-            base.OnVisualChildrenChanged(visualAdded, visualRemoved);
-
-
-            if (visualAdded is BuildingBlock)
-            {
-                (visualAdded as BuildingBlock).SetMouseEvents(Block_MouseMove, NextCommand_Drop, Input_Drop, Stack_MouseEnter, Stack_MouseLeave);
-                (visualAdded as BuildingBlock).CanvasColor = Background;
-            }
-
-            if(visualAdded is Rectangle)
-            {
-                (visualAdded as Rectangle).DragEnter += BlockBuildingCanvas_DragEnter;
-                (visualAdded as Rectangle).DragLeave += BlockBuildingCanvas_DragLeave;
-                (visualAdded as Rectangle).Drop += TrashBin_Drop;
-            }
-
-        }
         double offsetX, offsetY;
         private void Block_MouseMove(object sender, MouseEventArgs e)
         {
@@ -79,7 +70,10 @@ namespace grabbableBlocks.CustomControls
             if(e.ChangedButton == MouseButton.Middle)
             {
                 BuildingBlock tobeDel = ((sender as FrameworkElement).Parent as Grid).TemplatedParent as BuildingBlock;
-                (tobeDel.Parent as BlockBuildingCanvas).Children.Remove(tobeDel);
+                if(tobeDel.Parent is BlockBuildingCanvas)
+                    (tobeDel.Parent as BlockBuildingCanvas).Children.Remove(tobeDel);
+                else if(tobeDel.Parent is StackPanel)
+                    (tobeDel.Parent as StackPanel).Children.Remove(tobeDel);
             }
         }
         private void Stack_MouseEnter(object sender, MouseEventArgs e)

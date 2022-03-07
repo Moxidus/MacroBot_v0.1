@@ -16,6 +16,21 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockPress), new FrameworkPropertyMetadata(typeof(ContentBlockPress)));
         }
 
+
+        public ContentBlockPress() { }
+        public ContentBlockPress(SingleContent content)
+        {
+
+        }
+
+        Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(170, 34, 170));
+        public override void OnApplyTemplate()
+        {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
+            base.OnApplyTemplate();
+        }
         public string GetCode()
         {
             string result = "PRESS(";

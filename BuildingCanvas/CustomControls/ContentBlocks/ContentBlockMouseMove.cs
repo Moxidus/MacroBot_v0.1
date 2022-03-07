@@ -17,10 +17,21 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockMouseMove), new FrameworkPropertyMetadata(typeof(ContentBlockMouseMove)));
         }
 
+        public ContentBlockMouseMove() { }
+        public ContentBlockMouseMove(SingleContent content)
+        {
+
+        }
         public StackPanel XStack { get; private set; }
         public StackPanel YStack { get; private set; }
+
+        Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(170, 34, 170));
         public override void OnApplyTemplate()
         {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
+
             XStack = (StackPanel)Template.FindName("PART_XStack", this);
             XStack.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
             YStack = (StackPanel)Template.FindName("PART_YStack", this);

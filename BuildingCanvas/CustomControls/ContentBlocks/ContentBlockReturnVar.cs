@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
@@ -14,10 +15,21 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockReturnVar), new FrameworkPropertyMetadata(typeof(ContentBlockReturnVar)));
         }
 
+
+        public ContentBlockReturnVar() { }
+        public ContentBlockReturnVar(SingleContent content)
+        {
+
+        }
+
         private ComboBox comboxVar;
 
+        Brush DefaultBlockColor = new SolidColorBrush(Colors.Lime);
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(32, 141, 0));
         public override void OnApplyTemplate()
         {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
 
             comboxVar = (ComboBox)Template.FindName("PART_Combobox", this);
             

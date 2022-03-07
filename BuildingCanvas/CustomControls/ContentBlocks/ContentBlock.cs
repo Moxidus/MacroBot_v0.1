@@ -23,6 +23,16 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlock), new FrameworkPropertyMetadata(typeof(ContentBlock)));
         }
 
+        Brush DefaultBlockColor = new SolidColorBrush(Colors.White);
+        Brush DefaultBorderColor = new SolidColorBrush(Colors.DarkGray);
+        public override void OnApplyTemplate()
+        {
+            if(BlockParent.BlockColor == null)
+                BlockParent.BlockColor = DefaultBlockColor;
+            if (BlockParent.BorderColor == null)
+                BlockParent.BorderColor = DefaultBorderColor;
+            base.OnApplyTemplate();
+        }
         protected BuildingBlock GetBuildingBlockOrNull(StackPanel stack) => stack.Children.Count != 0 ? stack.Children[0] as BuildingBlock : null;
 
         public SingleContent GetData()

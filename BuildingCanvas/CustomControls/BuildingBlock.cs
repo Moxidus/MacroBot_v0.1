@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,7 +32,6 @@ namespace grabbableBlocks.CustomControls
             get { return (Brush)GetValue(BorderColorProperty); }
             set { SetValue(BorderColorProperty, value); }
         }
-
         public Brush CanvasColor
         {
             get { return (Brush)GetValue(CanvasColorProperty); }
@@ -39,8 +39,8 @@ namespace grabbableBlocks.CustomControls
         }
 
         public static readonly DependencyProperty MainContentProperty = DependencyProperty.Register("MainContent", typeof(object), typeof(BuildingBlock), null);
-        public static DependencyProperty BlockColorProperty = DependencyProperty.Register("BlockColor", typeof(Brush), typeof(BuildingBlock), null);
-        public static DependencyProperty BorderColorProperty = DependencyProperty.Register("BorderColor", typeof(Brush), typeof(BuildingBlock), null);
+        public static DependencyProperty BlockColorProperty = DependencyProperty.Register("BlockColor", typeof(Brush), typeof(BuildingBlock), null /*new PropertyMetadata(Brushes.White)*/);
+        public static DependencyProperty BorderColorProperty = DependencyProperty.Register("BorderColor", typeof(Brush), typeof(BuildingBlock), null /*new PropertyMetadata(Brushes.DarkGray)*/);
         public static DependencyProperty CanvasColorProperty = DependencyProperty.Register("CanvasColor", typeof(Brush), typeof(BuildingBlock), null);
 
 
@@ -75,10 +75,36 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(BuildingBlock), new FrameworkPropertyMetadata(typeof(BuildingBlock)));
         }
 
+        public BuildingBlock()
+        {
+            CanvasColor = BlockBuildingCanvas.CanvasColor;
+            Foreground = new SolidColorBrush(Colors.White);
+        }
 
-      
+
+        public BuildingBlock(SingleBlock meData) {//TODO: finish
+
+            Foreground = new SolidColorBrush(Colors.White);
+            CanvasColor = BlockBuildingCanvas.CanvasColor;
+
+            Canvas.SetLeft(this, meData.Pos.X);
+            Canvas.SetTop(this, meData.Pos.Y);
+
+            Type type = Type.GetType(meData.InsideContent.ContentType);
+            ConstructorInfo ctor = type.GetConstructor(new Type[0]);
+            object instance = ctor.Invoke(new object[]{ });
+            MainContent = instance;
+
+            if(meData.NextContent != null)
+                NextChild = new BuildingBlock(meData.NextContent);
+            if(meData.Inputcontent != null)
+                InputChild = new BuildingBlock(meData.Inputcontent);
+
+        }
 
 
+        UIElement NextChild;
+        UIElement InputChild;
         protected StackPanel nextCommandPanel;
         protected StackPanel inputDataPanel;
         protected StackPanel contentPanel;
@@ -86,11 +112,7 @@ namespace grabbableBlocks.CustomControls
         private Rectangle backgroundRectangle;
         public Grid InputGRID;
 
-        public MouseButtonEventHandler Block_MouseLeftPressed { get; private set; }
-        public DragEventHandler NextCommand_Drop { get; private set; }
-        public DragEventHandler Input_Drop { get; private set; }
-        public MouseEventHandler Stack_mouseEnter { get; private set; }
-        public MouseEventHandler Stack_mouseLeave { get; private set; }
+        private Border inputNob;
 
         public string GetInputData()
         {
@@ -99,65 +121,76 @@ namespace grabbableBlocks.CustomControls
             return ((inputDataPanel.Children[0] as BuildingBlock).MainContent as ICode).GetCode();
         }
 
-
         public override void OnApplyTemplate()
         {
-            nextCommandPanel = (StackPanel)Template.FindName("PART_NextCommandPanel", this);
-            inputDataPanel = (StackPanel)Template.FindName("PART_InputDataPanel", this);
-            contentPanel = (StackPanel)Template.FindName("PART_ContentPanel", this);
-            backgroundRectangle = (Rectangle)Template.FindName("PART_BackgroundRectangle", this);
-            InputGRID = (Grid)Template.FindName("PART_InputGRID", this);
+            nextCommandPanel = Template.FindName("PART_NextCommandPanel", this) as StackPanel;
+            if(NextChild != null)
+                nextCommandPanel.Children.Add(NextChild);
+
+            inputDataPanel = Template.FindName("PART_InputDataPanel", this) as StackPanel;
+            if (InputChild != null)
+                inputDataPanel.Children.Add(InputChild);
+
+            contentPanel = Template.FindName("PART_ContentPanel", this) as StackPanel;
+            backgroundRectangle = Template.FindName("PART_BackgroundRectangle", this) as Rectangle;
+            InputGRID = Template.FindName("PART_InputGRID", this) as Grid;
+
+            inputNob = Template.FindName("PART_InputNob", this) as Border;
 
 
-
-
+            
+            
             if (contentPanel != null)
             {
-                contentPanel.MouseLeftButtonDown += Block_MouseLeftPressed;
+                contentPanel.MouseLeftButtonDown += BlockBuildingCanvas.CanvasBlockBuilding_MouseMove;
                 contentPanel.MouseUp += BlockBuildingCanvas.CanvasBlockBuilding_Delete;
             }
+            
             if (backgroundRectangle != null)
             {
-                backgroundRectangle.MouseLeftButtonDown += Block_MouseLeftPressed;
+                backgroundRectangle.MouseLeftButtonDown += BlockBuildingCanvas.CanvasBlockBuilding_MouseMove;
                 backgroundRectangle.MouseUp += BlockBuildingCanvas.CanvasBlockBuilding_Delete;
             }
             
             if (inputDataPanel != null)
             {
-                inputDataPanel.Drop += Input_Drop;
+                inputDataPanel.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
                 inputDataPanel.DragEnter += BlockBuildingCanvas.CanvasBlockBuildingCanvas_DragEnter;
                 inputDataPanel.DragLeave += BlockBuildingCanvas.CanvasBlockBuildingCanvas_DragLeave;
             }
             if (nextCommandPanel != null)
             {
-                nextCommandPanel.Drop += NextCommand_Drop;
+                nextCommandPanel.Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
                 nextCommandPanel.DragEnter += BlockBuildingCanvas.CanvasBlockBuildingCanvas_DragEnter;
                 nextCommandPanel.DragLeave += BlockBuildingCanvas.CanvasBlockBuildingCanvas_DragLeave;
             }
+                        
+            nextCommandPanel.MouseEnter += BlockBuildingCanvas.CanvasBlockBuilding_MouseEnter;
+            inputDataPanel.MouseEnter += BlockBuildingCanvas.CanvasBlockBuilding_MouseEnter;
+                        
+            nextCommandPanel.MouseLeave += BlockBuildingCanvas.CanvasBlockBuilding_MouseLeave;
+            inputDataPanel.MouseLeave += BlockBuildingCanvas.CanvasBlockBuilding_MouseLeave;
 
-
-
-            if (Stack_mouseEnter != null)
-            {
-                nextCommandPanel.MouseEnter += Stack_mouseEnter;
-                inputDataPanel.MouseEnter += Stack_mouseEnter;
-
-            }
-            if (Stack_mouseLeave != null)
-            {
-                nextCommandPanel.MouseLeave += Stack_mouseLeave;
-                inputDataPanel.MouseLeave += Stack_mouseLeave;
-            }
-
+            inputDataPanel.LayoutUpdated += InputDataPanel_LayoutUpdated;
 
             base.OnApplyTemplate();
         }
 
+        private void InputDataPanel_LayoutUpdated(object sender, EventArgs e)
+        {
+            if (inputDataPanel != null && inputNob != null && inputDataPanel.Children.Count > 0)
+            {
+                inputNob.Background = (inputDataPanel.Children[0] as BuildingBlock).BlockColor;
+                (inputDataPanel.Children[0] as BuildingBlock).ReturnNobVis = Visibility.Collapsed;
+            }
+            else if (inputDataPanel != null && inputNob != null && inputDataPanel.Children.Count == 0)
+            {
+                inputNob.Background = CanvasColor;
+            }
+        }
 
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
-
-
             if (this is BuildingBlockStart == false)
             {
                 InputNobVis = Visibility.Collapsed;
@@ -175,6 +208,7 @@ namespace grabbableBlocks.CustomControls
                     PrevNobVis = Visibility.Visible;
             }
 
+
             if (MainContent is ContentBlock)
             {
                 (MainContent as ContentBlock).BlockParent = this;
@@ -184,14 +218,6 @@ namespace grabbableBlocks.CustomControls
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }
 
-        public void SetMouseEvents(MouseButtonEventHandler block_mouseLeftPressed, DragEventHandler nextCommand_drop, DragEventHandler input_drop, MouseEventHandler stack_mouseEnter, MouseEventHandler stack_mouseLeave)
-        {
-            this.Block_MouseLeftPressed = block_mouseLeftPressed;
-            this.NextCommand_Drop = nextCommand_drop;
-            this.Input_Drop = input_drop;
-            this.Stack_mouseEnter = stack_mouseEnter;
-            this.Stack_mouseLeave = stack_mouseLeave;
-        }
 
         public string GetCode()
         {

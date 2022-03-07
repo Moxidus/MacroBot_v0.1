@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
@@ -19,8 +20,19 @@ namespace grabbableBlocks.CustomControls
         private StackPanel LeftValuePanel;
         private StackPanel RightValuePanel;
 
+
+        public ContentBlockMathOperation() { }
+        public ContentBlockMathOperation(SingleContent content)
+        {
+
+        }
+
+        Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(209, 0, 255));
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(90, 0, 141));
         public override void OnApplyTemplate()
         {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
 
             comboxOperator = (ComboBox)Template.FindName("PART_Combobox", this);
             LeftValuePanel = (StackPanel)Template.FindName("PART_LeftDataPanel", this);

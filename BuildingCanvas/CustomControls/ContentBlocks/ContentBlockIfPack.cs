@@ -18,6 +18,11 @@ namespace grabbableBlocks.CustomControls
         }
 
 
+        public ContentBlockIfPack() { }
+        public ContentBlockIfPack(SingleContent content)
+        {
+
+        }
 
         public int IfElseNumber
         {
@@ -94,8 +99,13 @@ namespace grabbableBlocks.CustomControls
         public Button RemoveIEButton { get; private set; }
         public CheckBox ElseEnabled { get; private set; }
 
+
+        Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(151, 255, 0));
+        Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(112, 162, 25));
         public override void OnApplyTemplate()
         {
+            BlockParent.BlockColor = DefaultBlockColor;
+            BlockParent.BorderColor = DefaultBorderColor;
 
             DOValuePanel = (StackPanel)Template.FindName("PART_DoDataPanel", this);
             DOValuePanel.Drop += BlockBuildingCanvas.CanvasCommandDropEvent;

@@ -237,9 +237,12 @@ namespace MacroBot_v0._1
             }
             //TODO: load blocks in
 
+            CustomCanvas.Children.Clear();
+
             foreach(SingleBlock block in data.Blocks)
             {
                 callBlock(block, "");
+                CustomCanvas.Children.Add(new BuildingBlock(block));
             }
 
             AssetLoader(data.savedImages);
@@ -247,12 +250,15 @@ namespace MacroBot_v0._1
         //Just debug class delete this
         private void callBlock(SingleBlock block, string offset)
         {
+            
             if (block == null)
                 return;
             Debug.Write(offset);
-            Debug.WriteLine(block.InsideContent.ContentType);
+            Type tp = Type.GetType(block.InsideContent.ContentType, new bool());
+            Debug.WriteLine(tp + $"x: {block.Pos.X} y: {block.Pos.Y}");//TODO: create special constructor for every type that is going to create it self with given parameters
             offset += "\t";
             callBlock(block.NextContent, offset);
+
         }
 
         private void AssetLoader(AssetHolder[] assets)
@@ -353,39 +359,39 @@ namespace MacroBot_v0._1
             Debug.WriteLine("Clicked: " + btn.Content);
 
             if (btn.Content.ToString() == "Insert variable block")
-                CreateBlock(new ContentBlockReturnValue(), Color.FromRgb(0, 255, 209), Color.FromRgb(0, 141, 135));
+                CreateBlock(new ContentBlockReturnValue());
             else if (btn.Content.ToString() == "Variable select block")
-                CreateBlock(new ContentBlockReturnVar(), Colors.Lime, Color.FromRgb(32, 141, 0));
+                CreateBlock(new ContentBlockReturnVar());
             else if (btn.Content.ToString() == "Operation block")
-                CreateBlock(new ContentBlockMathOperation(), Color.FromRgb(209, 0, 255), Color.FromRgb(90, 0, 141));
+                CreateBlock(new ContentBlockMathOperation());
             else if (btn.Content.ToString() == "Set variable block")
-                CreateBlock(new ContentBlockSetVar(), Colors.Red, Colors.DarkRed);
+                CreateBlock(new ContentBlockSetVar());
             else if (btn.Content.ToString() == "Not block")
-                CreateBlock(new ContentBlockNot(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockNot());
             else if (btn.Content.ToString() == "Repeat block")
-                CreateBlock(new ContentBlockWhile(), Colors.Yellow, Color.FromRgb(156, 162, 25));
+                CreateBlock(new ContentBlockWhile());
             else if (btn.Content.ToString() == "Condition block")
-                CreateBlock(new ContentBlockIfPack() { ElseVisible = Visibility.Collapsed }, Color.FromRgb(151, 255, 0), Color.FromRgb(112, 162, 25));
+                CreateBlock(new ContentBlockIfPack() { ElseVisible = Visibility.Collapsed });
             else if (btn.Content.ToString() == "Start block")
                 CustomCanvas.Children.Add(new BuildingBlockStart());
             else if (btn.Content.ToString() == "Start Function")
-                CreateBlock(new ContentBlockStart(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockStart());
             else if (btn.Content.ToString() == "Find Function")
-                CreateBlock(new ContentBlockFind(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockFind());
             else if (btn.Content.ToString() == "Press Function")
-                CreateBlock(new ContentBlockPress(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockPress());
             else if (btn.Content.ToString() == "Click Function")
-                CreateBlock(new ContentBlockClick(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockClick());
             else if (btn.Content.ToString() == "Print Function")
-                CreateBlock(new ContentBlockPrint(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockPrint());
             else if (btn.Content.ToString() == "To String Function")
-                CreateBlock(new ContentBlockToString(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockToString());
             else if (btn.Content.ToString() == "Delay Function")
-                CreateBlock(new ContentBlockDelay(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockDelay());
             else if (btn.Content.ToString() == "Mouse move Function")
-                CreateBlock(new ContentBlockMouseMove(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockMouseMove());
             else if (btn.Content.ToString() == "Sin Function")
-                CreateBlock(new ContentBlockSin(), Color.FromRgb(255, 80, 255), Color.FromRgb(170, 34, 170));
+                CreateBlock(new ContentBlockSin());
             else if (btn.Content.ToString() == "Generate code")
             {
                 scriptCode.Document.Blocks.Clear();
@@ -414,14 +420,11 @@ namespace MacroBot_v0._1
 
         }
 
-        private void CreateBlock(ContentBlock content, Color backColor, Color BorderColor)
+        private void CreateBlock(ContentBlock content)
         {
             BuildingBlock block = new BuildingBlock()
             {
                 MainContent = content,
-                BlockColor = new SolidColorBrush(backColor),
-                BorderColor = new SolidColorBrush(BorderColor),
-                Foreground = new SolidColorBrush(Colors.White)
             };
             Canvas.SetLeft(block, 50);
             Canvas.SetTop(block, 50);
