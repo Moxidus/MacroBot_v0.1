@@ -217,15 +217,8 @@ namespace MacroBot_v0._1
             scriptCode.Document.Blocks.Clear();
             scriptCode.Document.Blocks.Add(new Paragraph(new Run(data.script)));
 
-            foreach (AssetHolder item in data.savedImages)
-            {
-                Image<Bgr, byte> img = new Image<Bgr, byte>(item.AssetSize);
-                img.Bytes = item.AssetBytes;
-                AssetItem newAsset = new AssetItem(img, item.AssetName);
 
-                AssetsList.Items.Add(newAsset);
-                BlockBuildingCanvas.VariableList.Add(newAsset.ToString());
-            }
+            AssetLoader(data.savedImages);
         }
 
         private void LoaderMCRB(string pwd)
@@ -242,8 +235,29 @@ namespace MacroBot_v0._1
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            //TODO: load blocks in
 
-            foreach (AssetHolder item in data.savedImages)
+            foreach(SingleBlock block in data.Blocks)
+            {
+                callBlock(block, "");
+            }
+
+            AssetLoader(data.savedImages);
+        }
+        //Just debug class delete this
+        private void callBlock(SingleBlock block, string offset)
+        {
+            if (block == null)
+                return;
+            Debug.Write(offset);
+            Debug.WriteLine(block.InsideContent.ContentType);
+            offset += "\t";
+            callBlock(block.NextContent, offset);
+        }
+
+        private void AssetLoader(AssetHolder[] assets)
+        {
+            foreach (AssetHolder item in assets)
             {
                 //------------------------------------------WorkAround beacause sometime Image doesnt like my bytes
                 Mat currentMat;
