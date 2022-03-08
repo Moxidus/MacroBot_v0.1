@@ -20,8 +20,14 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockMouseMove() { }
         public ContentBlockMouseMove(SingleContent content)
         {
-
+            if (content.BlockList != null)
+                XStackHolder = new BuildingBlock(content.BlockList[0]);
+            if (content.BlockList != null)
+                YStackHolder = new BuildingBlock(content.BlockList[1]);
         }
+
+        BuildingBlock XStackHolder;
+        BuildingBlock YStackHolder;
         public StackPanel XStack { get; private set; }
         public StackPanel YStack { get; private set; }
 
@@ -36,6 +42,11 @@ namespace grabbableBlocks.CustomControls
             XStack.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
             YStack = (StackPanel)Template.FindName("PART_YStack", this);
             YStack.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
+
+            if (XStackHolder != null)
+                XStack.Children.Add(XStackHolder);
+            if (YStackHolder != null)
+                YStack.Children.Add(YStackHolder);
 
 
             base.OnApplyTemplate();
@@ -59,7 +70,7 @@ namespace grabbableBlocks.CustomControls
             return result;
 
         }
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();

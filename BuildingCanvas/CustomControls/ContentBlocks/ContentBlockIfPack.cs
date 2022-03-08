@@ -21,9 +21,25 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockIfPack() { }
         public ContentBlockIfPack(SingleContent content)
         {
+            int? elifCount = content.ContentProperties[1] as int?;
+            elCheckedHolder = content.ContentProperties[0] as bool?;
 
+
+            for(int i = 0; i < elifCount; i++)
+            {
+                CreteIfElse();
+            }
+
+            //asigns if and do
+            if (content.BlockList != null)
+                priConHolder = new BuildingBlock(content.BlockList[0]);
+            if (content.BlockList != null)
+                priActHolder = new BuildingBlock(content.BlockList[1]);
         }
 
+        bool? elCheckedHolder;
+        BuildingBlock priConHolder;
+        BuildingBlock priActHolder;
         public int IfElseNumber
         {
             get { return (int)GetValue(IfElseNumberProperty); }
@@ -31,7 +47,6 @@ namespace grabbableBlocks.CustomControls
                 SetValue(IfElseNumberProperty, value);
             }
         }
-
         public Visibility ElseVisible
         {
             get { return (Visibility)GetValue(ElseVisibleProperty); }
@@ -40,12 +55,10 @@ namespace grabbableBlocks.CustomControls
                 SetValue(ElseVisibleProperty, value);
             }
         }
-
-
+        
         public static DependencyProperty IfElseNumberProperty = DependencyProperty.Register("IfElseNumber", typeof(int), typeof(ContentBlockIfPack));
         public static DependencyProperty ElseVisibleProperty = DependencyProperty.Register("ElseVisible", typeof(Visibility), typeof(ContentBlockIfPack));
-
-
+        
         void CreteIfElse()
         {
 
@@ -87,6 +100,22 @@ namespace grabbableBlocks.CustomControls
 
 
             ifDoList.Add(groupStack);
+
+
+            if (IfsStack != null)
+            {
+
+                for (int i = 0; i < ifDoList.Count; i++)
+                {
+
+                    if (IfsStack.Children.Contains(ifDoList[i]))
+                        continue;
+
+                    GetDoActionStack(i).Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
+                    GetIfConStack(i).Drop += BlockBuildingCanvas.CanvasInputDropEvent;
+                    IfsStack.Children.Insert(IfsStack.Children.Count - 1, ifDoList[i]);
+                }
+            }
         }
 
 
@@ -115,6 +144,11 @@ namespace grabbableBlocks.CustomControls
             ElseDoDataPanel.Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
 
 
+            if (priConHolder != null)
+                MainConPanel.Children.Add(priConHolder);
+            if (priActHolder != null)
+                DOValuePanel.Children.Add(priActHolder);
+
             IfsStack = (StackPanel)Template.FindName("PART_IfsStack", this);
 
             AddIEButton = (Button)Template.FindName("PART_AddIEButton", this);
@@ -123,6 +157,28 @@ namespace grabbableBlocks.CustomControls
             RemoveIEButton.Click += RemoveIEButton_Click;
             ElseEnabled = (CheckBox)Template.FindName("PART_ElseEnabled", this);
             ElseEnabled.Click += ElseEnabled_Click; ;
+
+
+            if (elCheckedHolder == true)
+                ElseVisible = Visibility.Visible;
+            else
+                ElseVisible = Visibility.Collapsed;
+
+            if (IfsStack != null)
+            {
+
+                for (int i = 0; i < ifDoList.Count; i++)
+                {
+
+                    if (IfsStack.Children.Contains(ifDoList[i]))
+                        continue;
+
+                    GetDoActionStack(i).Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
+                    GetIfConStack(i).Drop += BlockBuildingCanvas.CanvasInputDropEvent;
+                    IfsStack.Children.Insert(IfsStack.Children.Count - 1, ifDoList[i]);
+                }
+            }
+
 
             base.OnApplyTemplate();
         }
@@ -149,20 +205,6 @@ namespace grabbableBlocks.CustomControls
         private void AddIEButton_Click(object sender, RoutedEventArgs e)
         {
             CreteIfElse();
-            if (IfsStack != null)
-            {
-
-                for (int i = 0; i < ifDoList.Count; i++)
-                {
-
-                    if (IfsStack.Children.Contains(ifDoList[i]))
-                        continue;
-
-                    GetDoActionStack(i).Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
-                    GetIfConStack(i).Drop += BlockBuildingCanvas.CanvasInputDropEvent;
-                    IfsStack.Children.Insert(IfsStack.Children.Count - 1, ifDoList[i]);
-                }
-            }
         }
 
         public string GetCode()
@@ -246,7 +288,7 @@ namespace grabbableBlocks.CustomControls
         private StackPanel GetDoActionStack(int index)=> (ifDoList[index].Children[1] as StackPanel).Children[1] as StackPanel;
 
 
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();
@@ -256,13 +298,17 @@ namespace grabbableBlocks.CustomControls
                 contentNumber++;
             content.BlockList = new SingleBlock[contentNumber];
 
-            content.BlockList[0] = GetBuildingBlockOrNull(MainConPanel).GetData();//primary if condition panel
-            content.BlockList[0] = GetBuildingBlockOrNull(DOValuePanel).GetData();//primary if condition panel
+            if(GetBuildingBlockOrNull(MainConPanel) != null)
+                content.BlockList[0] = GetBuildingBlockOrNull(MainConPanel).GetData();//primary if condition panel
+            if (GetBuildingBlockOrNull(DOValuePanel) != null)
+                content.BlockList[1] = GetBuildingBlockOrNull(DOValuePanel).GetData();//primary do action panel
 
             for(int i = 0; i < ifDoList.Count; i++)
             {
-                content.BlockList[i + 2] = GetBuildingBlockOrNull(GetIfConStack(i)).GetData();
-                content.BlockList[i + 3] = GetBuildingBlockOrNull(GetDoActionStack(i)).GetData();
+                if (GetBuildingBlockOrNull(GetIfConStack(i)) != null)
+                    content.BlockList[i + 2] = GetBuildingBlockOrNull(GetIfConStack(i)).GetData();
+                if (GetBuildingBlockOrNull(GetDoActionStack(i)) != null)
+                    content.BlockList[i + 3] = GetBuildingBlockOrNull(GetDoActionStack(i)).GetData();
             }
 
             content.ContentProperties = new object[2];

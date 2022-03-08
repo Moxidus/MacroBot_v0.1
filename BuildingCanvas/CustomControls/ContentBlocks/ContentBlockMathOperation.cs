@@ -24,8 +24,16 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockMathOperation() { }
         public ContentBlockMathOperation(SingleContent content)
         {
-
+            selectedItem = content.ContentProperties[0];
+            if (content.BlockList != null)
+                LeftValuePanelHolder = new BuildingBlock(content.BlockList[0]);
+            if (content.BlockList != null)
+                RightValuePanelkHolder = new BuildingBlock(content.BlockList[1]);
         }
+
+        object selectedItem;
+        BuildingBlock LeftValuePanelHolder;
+        BuildingBlock RightValuePanelkHolder;
 
         Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(209, 0, 255));
         Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(90, 0, 141));
@@ -37,6 +45,21 @@ namespace grabbableBlocks.CustomControls
             comboxOperator = (ComboBox)Template.FindName("PART_Combobox", this);
             LeftValuePanel = (StackPanel)Template.FindName("PART_LeftDataPanel", this);
             RightValuePanel = (StackPanel)Template.FindName("PART_RightDataPanel", this);
+
+            //setting values from save file
+            if (LeftValuePanelHolder != null)
+                LeftValuePanel.Children.Add(LeftValuePanelHolder);
+            if (RightValuePanelkHolder != null)
+                RightValuePanel.Children.Add(RightValuePanelkHolder);
+
+            foreach (object item in comboxOperator.Items)
+            {
+                if (item.ToString() == selectedItem.ToString())
+                {
+                    comboxOperator.SelectedItem = item;
+                }
+            }
+
 
             LeftValuePanel.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
             RightValuePanel.Drop += BlockBuildingCanvas.CanvasInputDropEvent;
@@ -60,7 +83,7 @@ namespace grabbableBlocks.CustomControls
             return $"{leftCode} {operation} {rightCode}";
         }
 
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();

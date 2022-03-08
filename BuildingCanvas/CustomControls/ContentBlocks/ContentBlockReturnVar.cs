@@ -19,9 +19,10 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockReturnVar() { }
         public ContentBlockReturnVar(SingleContent content)
         {
-
+            selectedItem = content.ContentProperties[0];
         }
 
+        object selectedItem;
         private ComboBox comboxVar;
 
         Brush DefaultBlockColor = new SolidColorBrush(Colors.Lime);
@@ -32,8 +33,14 @@ namespace grabbableBlocks.CustomControls
             BlockParent.BorderColor = DefaultBorderColor;
 
             comboxVar = (ComboBox)Template.FindName("PART_Combobox", this);
-            
             comboxVar.ItemsSource = BlockBuildingCanvas.VariableList;
+            foreach (object item in comboxVar.Items)
+            {
+                if (item.ToString() == selectedItem.ToString())
+                {
+                    comboxVar.SelectedItem = item;
+                }
+            }
 
             base.OnApplyTemplate();
         }
@@ -43,7 +50,7 @@ namespace grabbableBlocks.CustomControls
                 return "UnselectedVarName";
             return comboxVar.SelectedItem.ToString();
         }
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();

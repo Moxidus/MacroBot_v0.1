@@ -18,9 +18,11 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockWhile() { }
         public ContentBlockWhile(SingleContent content)
         {
-
+            if(content.BlockList != null)
+                DOValuePanelHolder = new BuildingBlock(content.BlockList[0]);
         }
-
+        
+        BuildingBlock DOValuePanelHolder;
         public StackPanel DOValuePanel { get; private set; }
 
         Brush DefaultBlockColor = new SolidColorBrush(Colors.Yellow);
@@ -31,6 +33,8 @@ namespace grabbableBlocks.CustomControls
             BlockParent.BorderColor = DefaultBorderColor;
             
             DOValuePanel = (StackPanel)Template.FindName("PART_DoDataPanel", this);
+            if(DOValuePanelHolder != null)
+                DOValuePanel.Children.Add(DOValuePanelHolder);
             DOValuePanel.Drop += BlockBuildingCanvas.CanvasCommandDropEvent;
 
             base.OnApplyTemplate();
@@ -47,7 +51,7 @@ namespace grabbableBlocks.CustomControls
             return result;
         }
 
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();

@@ -91,8 +91,8 @@ namespace grabbableBlocks.CustomControls
             Canvas.SetTop(this, meData.Pos.Y);
 
             Type type = Type.GetType(meData.InsideContent.ContentType);
-            ConstructorInfo ctor = type.GetConstructor(new Type[0]);
-            object instance = ctor.Invoke(new object[]{ });
+            ConstructorInfo ctor = type.GetConstructor(new Type[] { typeof(SingleContent) });
+            object instance = ctor.Invoke(new object[]{ meData.InsideContent });
             MainContent = instance;
 
             if(meData.NextContent != null)

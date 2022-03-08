@@ -35,7 +35,7 @@ namespace grabbableBlocks.CustomControls
         }
         protected BuildingBlock GetBuildingBlockOrNull(StackPanel stack) => stack.Children.Count != 0 ? stack.Children[0] as BuildingBlock : null;
 
-        public SingleContent GetData()
+        public virtual SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();

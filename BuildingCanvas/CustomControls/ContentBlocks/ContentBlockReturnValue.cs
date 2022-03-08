@@ -20,9 +20,10 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockReturnValue() { }
         public ContentBlockReturnValue(SingleContent content)
         {
-
+            SettingValue = content.ContentProperties[0].ToString();
         }
 
+        string SettingValue;
         private TextBox textBoxVar;
 
         Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(0, 255, 209));
@@ -33,13 +34,14 @@ namespace grabbableBlocks.CustomControls
             BlockParent.BorderColor = DefaultBorderColor;
             
             textBoxVar = (TextBox)Template.FindName("PART_TextBox", this);
+            textBoxVar.Text = SettingValue;
 
             base.OnApplyTemplate();
         }
 
         public string GetCode() => textBoxVar.Text;
 
-        public new SingleContent GetData()
+        public override SingleContent GetData()
         {
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();
