@@ -20,9 +20,9 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockMouseMove() { }
         public ContentBlockMouseMove(SingleContent content)
         {
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[0] != null)
                 XStackHolder = new BuildingBlock(content.BlockList[0]);
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[1] != null)
                 YStackHolder = new BuildingBlock(content.BlockList[1]);
         }
 
@@ -76,8 +76,10 @@ namespace grabbableBlocks.CustomControls
             content.ContentType = GetType().ToString();
 
             content.BlockList = new SingleBlock[2];
-            content.BlockList[0] = GetBuildingBlockOrNull(XStack).GetData();
-            content.BlockList[1] = GetBuildingBlockOrNull(YStack).GetData();
+            if (GetBuildingBlockOrNull(XStack) != null)
+                content.BlockList[0] = GetBuildingBlockOrNull(XStack).GetData();
+            if(GetBuildingBlockOrNull(YStack) != null)
+                content.BlockList[1] = GetBuildingBlockOrNull(YStack).GetData();
 
             return content;
         }

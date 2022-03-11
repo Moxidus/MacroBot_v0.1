@@ -18,9 +18,9 @@ namespace MacroBot_v0._1
     //It has memmory leak somewhere
     static class SnipMaker
     {
-        static public Image<Bgr, byte> takeSnip()
+        static public Image<Bgra, byte> takeSnip()
         {
-            Image<Bgr, byte> bmp = SnippingTool.Snip();
+            Image<Bgra, byte> bmp = SnippingTool.Snip();
             if (bmp != null)
             {
                 return (bmp);
@@ -31,7 +31,7 @@ namespace MacroBot_v0._1
 
     public partial class SnippingTool : Window, IDisposable
     {
-        public static Image<Bgr, byte> Snip()
+        public static Image<Bgra, byte> Snip()
         {
             int screenWidth = (int)System.Windows.SystemParameters.PrimaryScreenWidth;
             int screenHeight = (int)System.Windows.SystemParameters.PrimaryScreenHeight;
@@ -47,9 +47,9 @@ namespace MacroBot_v0._1
                         Bitmap bitmapImage = new Bitmap(snipper.Image);
 
                         Rectangle rectangle = new Rectangle(0, 0, bitmapImage.Width, bitmapImage.Height);//System.Drawing
-                        BitmapData bmpData = bitmapImage.LockBits(rectangle, ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format24bppRgb);//System.Drawing.Imaging
+                        BitmapData bmpData = bitmapImage.LockBits(rectangle, ImageLockMode.ReadWrite, System.Drawing.Imaging.PixelFormat.Format32bppRgb);//System.Drawing.Imaging
 
-                        Image<Bgr, byte> outputImage = new Image<Bgr, byte>(bitmapImage.Width, bitmapImage.Height, bmpData.Stride, bmpData.Scan0);
+                        Image<Bgra, byte> outputImage = new Image<Bgra, byte>(bitmapImage.Width, bitmapImage.Height, bmpData.Stride, bmpData.Scan0);
 
                         bitmapImage.Dispose();
                         snipper.Close();

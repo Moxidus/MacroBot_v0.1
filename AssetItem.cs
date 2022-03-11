@@ -8,13 +8,13 @@ namespace MacroBot_v0._1
 {
     class AssetItem
     {
-        public AssetItem(Image<Bgr, byte> asset, string name)
+        public AssetItem(Image<Bgra, byte> asset, string name)
         {
             this.asset = asset;
             this.name = name;
         }
 
-        public readonly Image<Bgr, byte> asset;
+        public Image<Bgra, byte> asset;
         public string name;
 
         public override string ToString()

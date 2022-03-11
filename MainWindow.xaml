@@ -29,9 +29,10 @@
             <RowDefinition Height="20px"/>
             <RowDefinition Height="10px"/>
             <RowDefinition Height="25px"/>
-            <RowDefinition Height="4*"/>
+            <RowDefinition Height="44*"/>
+            <RowDefinition Height="439*"/>
             <RowDefinition Height="15px"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="121*"/>
             <RowDefinition Height="10px"/>
         </Grid.RowDefinitions>
 
@@ -70,24 +71,23 @@
                      Grid.Row="3" 
                      Background="#FF313131"
                      BorderBrush="{x:Null}"
-                     Foreground="White" AcceptsTab="True" Grid.ColumnSpan="4">
+                     Foreground="White" AcceptsTab="True" Grid.ColumnSpan="4" Grid.RowSpan="2">
         </RichTextBox>
 
         <TextBlock Text="Assets:"
                    Foreground="White"
-                   Grid.Column="2"
-                   Grid.Row="3"
-                   Grid.ColumnSpan="4" Margin="0,483,0,0" Grid.RowSpan="2"
+                   Grid.Row="5" Grid.Column="2"
+                   Margin="5 0 0 0"
             />
         <ListBox x:Name="AssetsList"
                  Grid.Column="2"
-                 Grid.Row="4"
+                 Grid.Row="5"
                  Grid.ColumnSpan="4"
                  Background="#FF313131"
                  Foreground="White" Margin="0,15,0,0" Grid.RowSpan="2"/>
 
 
-        <Grid x:Name="BlockCanvas" Grid.Row="3" Grid.Column="2" Grid.RowSpan="3" Grid.ColumnSpan="4"
+        <Grid x:Name="BlockCanvas" Grid.Row="3" Grid.Column="2" Grid.RowSpan="4" Grid.ColumnSpan="4"
                     Background="#FF525252" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="96*"/>
@@ -174,6 +174,10 @@
                               BorderThickness="3" BorderBrush="#FFABADB3"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="12" RenderTransformOrigin="0.5,0.5">
 
                     </ListBox>
+                    <Button Margin="10 10 10 0"
+                    BorderThickness="3"
+                    Content="Open Image" Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click_2"/>
+
 
                 </StackPanel>
             </ScrollViewer>

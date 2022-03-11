@@ -9,7 +9,7 @@ using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
-    class ContentBlockFind : ContentBlock, ICode, IInputCommand, INextCommand, IPrevCommand
+    class ContentBlockFind : ContentBlock, ICode, IInputCommand, INextCommand, IPrevCommand, IReturnCommand
     {
 
         static ContentBlockFind()

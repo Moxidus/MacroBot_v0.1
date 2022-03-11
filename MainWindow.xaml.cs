@@ -27,6 +27,7 @@ using static MacroBot_v0._1.BlockData;
 using static MacroBot_v0._1.SaveAsQuestionWindow;
 using System.Runtime.InteropServices;
 using Emgu.CV.CvEnum;
+using MacroBot_v0._1.Dialogs;
 
 namespace MacroBot_v0._1
 {
@@ -64,9 +65,15 @@ namespace MacroBot_v0._1
             VarListBox.ItemsSource = BlockBuildingCanvas.VariableList;
         }
 
+
+        /// <summary>
+        /// Creates screenhot creted by croping tool and saves it to variable list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public void InsertImage(object sender, RoutedEventArgs e)
         {
-            Hide();
+            Hide();//Hides main windows
 
             Application.Current.Dispatcher.Invoke(delegate {
                 Thread.Sleep(300);//waits for window to hide
@@ -75,8 +82,10 @@ namespace MacroBot_v0._1
                 if (screenCrop.asset == null)
                     return;
 
-                changeNameDialog nameDialog = new changeNameDialog();
-                screenCrop.name = nameDialog.GetName();
+                Show();
+
+                screenCrop.name = changeNameDialog.GetName(this);
+
 
                 AssetsList.Items.Add(screenCrop);
                 BlockBuildingCanvas.VariableList.Add(screenCrop.ToString());
@@ -84,11 +93,12 @@ namespace MacroBot_v0._1
 
 
 
-            Show();
         }
         public void createNew(object sender, RoutedEventArgs e)
         {
-            SaveFile(sender, e);
+            WantToSaveDialog saveIt = new WantToSaveDialog();
+            if (saveIt.SaveItDialog(this))
+                SaveFile(sender, e);
             deleteImages();
             scriptCode.Document.Blocks.Clear();
             EditingFilePath = "";
@@ -108,25 +118,31 @@ namespace MacroBot_v0._1
             SaveAsQuestionWindow DialogSaveAs = new SaveAsQuestionWindow();
             SaveAsType = DialogSaveAs.SaveAsQuestionDialog(this);
             Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
+
+            string jsonString;
+
             if (SaveAsType == SaveType.SaveBlock)
             {
                 dlg.FileName = "MacroBlock"; // Default file name
                 dlg.DefaultExt = ".mcrb"; // Default file extension
                 dlg.Filter = "Macro script file (.mcrb)|*.mcrb"; // Filter files by extension
+
+                jsonString = SaveFileAsBlock();
             }
             else if (SaveAsType == SaveType.SaveScript)
             {
                 dlg.FileName = "MacroScript"; // Default file name
                 dlg.DefaultExt = ".mcr"; // Default file extension
                 dlg.Filter = "Macro script file (.mcr)|*.mcr"; // Filter files by extension
+
+                jsonString = SaveFileAsText();
             }
             else
                 return;
 
-            // Show save file dialog box
+            // Shows save file dialog box
             Nullable<bool> result = dlg.ShowDialog();
 
-            string jsonString = SaveFileAsBlock();
             // Process save file dialog box results
             if (result == true)
             {
@@ -143,9 +159,10 @@ namespace MacroBot_v0._1
             for (int i = 0; i < AssetsList.Items.Count; i++)
             {
                 AssetItem item = AssetsList.Items[i] as AssetItem;
-                data.savedImages[i] = new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
+                data.savedImages[i] = new AssetHolder(ImageConvertor.ImageToBase64String(item.asset), item.name, item.asset.Size);
             }
 
+            data.variables = BlockBuildingCanvas.VariableList.ToArray<string>();
 
             foreach (BuildingBlock b in CustomCanvas.Children)
             {
@@ -164,7 +181,7 @@ namespace MacroBot_v0._1
             for (int i = 0; i < AssetsList.Items.Count; i++)
             {
                 AssetItem item = AssetsList.Items[i] as AssetItem;
-                data.savedImages[i] = new AssetHolder(item.asset.Bytes, item.name, item.asset.Size);
+                data.savedImages[i] = new AssetHolder(ImageConvertor.ImageToBase64String(item.asset), item.name, item.asset.Size);
             }
 
             data.script = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
@@ -175,9 +192,7 @@ namespace MacroBot_v0._1
 
         private void OpenFile(object sender, RoutedEventArgs e)
         {
-            if (AssetsList.Items.Count != 0 || CustomCanvas.Children.Count != 0 || scriptCode.Document.Blocks.Count != 0)
-                createNew(sender, e);
-
+            createNew(sender, e);
 
             Microsoft.Win32.OpenFileDialog openFile = new Microsoft.Win32.OpenFileDialog();
             openFile.DefaultExt = ".mcr"; // Default file extension
@@ -242,8 +257,16 @@ namespace MacroBot_v0._1
             foreach(SingleBlock block in data.Blocks)
             {
                 callBlock(block, "");
-                CustomCanvas.Children.Add(new BuildingBlock(block));
+                CustomCanvas.Children.Add(BuildingBlock.CreateBlockOrStart(block));
             }
+
+            //Load variables
+            BlockBuildingCanvas.VariableList.Clear();
+            for(int i = 0; i < data.variables.Length; i++)
+            {
+                BlockBuildingCanvas.VariableList.Add(data.variables[i]);
+            }
+
 
             AssetLoader(data.savedImages);
         }
@@ -265,24 +288,12 @@ namespace MacroBot_v0._1
         {
             foreach (AssetHolder item in assets)
             {
-                //------------------------------------------WorkAround beacause sometime Image doesnt like my bytes
-                Mat currentMat;
+                Image<Bgra, byte> img = new Image<Bgra, byte>(item.AssetSize);
 
-                GCHandle rawDataHandle = GCHandle.Alloc(item.AssetBytes, GCHandleType.Pinned);
-                IntPtr address = rawDataHandle.AddrOfPinnedObject();
-
-                currentMat = new Mat(new System.Drawing.Size(item.AssetSize.Width, item.AssetSize.Height), DepthType.Cv8U, 1, address, item.AssetSize.Width);
-                rawDataHandle.Free();
-
-                Image<Bgr, byte> img = currentMat.ToImage<Bgr, byte>();
-
-                //----------------------------------------------------------
-
-                //img.Bytes = item.AssetBytes;//I'm very disappointed in you!
+                img.Bytes = ImageConvertor.ByteFromBase64String(item.AssetBase64);
                 AssetItem newAsset = new AssetItem(img, item.AssetName);
 
                 AssetsList.Items.Add(newAsset);
-                BlockBuildingCanvas.VariableList.Add(newAsset.ToString());
             }
         }
 
@@ -291,6 +302,8 @@ namespace MacroBot_v0._1
             SaveFile(sender, e);
 
             List<string> paths = saveAssetsToTemp();
+            string codePath = saveCodeToTemp();
+
             string PathPara = "";
             if (paths.Count > 0)
                 paths.ForEach(x => PathPara += x + " ");
@@ -300,10 +313,10 @@ namespace MacroBot_v0._1
             using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
             {
                 pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
-                pProcess.StartInfo.Arguments = $"-f \"{EditingFilePath}\""; //argument
+                pProcess.StartInfo.Arguments = $"-f \"{codePath}\""; //argument
 
                 if (PathPara != "")
-                    pProcess.StartInfo.Arguments += $"-a \"{PathPara}\""; //assets
+                    pProcess.StartInfo.Arguments += $" -a \"{PathPara}\""; //assets
 
                 pProcess.StartInfo.UseShellExecute = false;
                 pProcess.StartInfo.RedirectStandardOutput = true;
@@ -328,6 +341,16 @@ namespace MacroBot_v0._1
             }
 
             return allAssetsPath;
+        }
+        private string saveCodeToTemp()
+        {
+            string tempFileLoc = Path.GetTempPath();
+            tempFileLoc += "MacroBotCode";
+
+            string code = new TextRange(scriptCode.Document.ContentStart, scriptCode.Document.ContentEnd).Text;// Gets the whole code in string
+
+            File.WriteAllText(tempFileLoc, code);
+            return tempFileLoc;
         }
 
         private void SaveFile(object sender, RoutedEventArgs e)
@@ -437,6 +460,22 @@ namespace MacroBot_v0._1
                 BlockCanvas.Visibility = Visibility.Visible;
             else
                 BlockCanvas.Visibility = Visibility.Collapsed;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            if(VarListBox.SelectedIndex != -1)
+            {
+                foreach (AssetItem item in AssetsList.Items)
+                {
+                    Debug.WriteLine(VarListBox.SelectedItem.ToString() + " == " + item.name);
+                    if(VarListBox.SelectedItem.ToString() == item.name)
+                    {
+                        ImageViewer.ShowImage(item.asset);
+                        break;
+                    }
+                }
+            }
         }
     }
 }

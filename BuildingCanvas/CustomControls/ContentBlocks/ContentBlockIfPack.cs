@@ -16,13 +16,11 @@ namespace grabbableBlocks.CustomControls
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockIfPack), new FrameworkPropertyMetadata(typeof(ContentBlockIfPack)));
         }
-
-
         public ContentBlockIfPack() { }
         public ContentBlockIfPack(SingleContent content)
         {
-            int? elifCount = content.ContentProperties[1] as int?;
-            elCheckedHolder = content.ContentProperties[0] as bool?;
+            int? elifCount = int.Parse(content.ContentProperties[1].ToString());
+            elCheckedHolder = bool.Parse(content.ContentProperties[0].ToString());
 
 
             for(int i = 0; i < elifCount; i++)
@@ -31,15 +29,31 @@ namespace grabbableBlocks.CustomControls
             }
 
             //asigns if and do
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[0] != null)
                 priConHolder = new BuildingBlock(content.BlockList[0]);
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[1] != null)
                 priActHolder = new BuildingBlock(content.BlockList[1]);
-        }
 
+            //asigns all elifs 
+
+            for (int i = 0; i < elifCount; i++)
+            {
+                if (content.BlockList[i + 2] != null)
+                    GetIfConStack(i).Children.Add(new BuildingBlock(content.BlockList[i + 2]));
+                if (content.BlockList[i + 3] != null)
+                    GetDoActionStack(i).Children.Add(new BuildingBlock(content.BlockList[i + 3]));
+            }
+
+            //TODO: asign Else if if it exists
+            if (elCheckedHolder == true && content.BlockList != null && content.BlockList[content.BlockList.Length - 1] != null)
+                elseActHolder = new BuildingBlock(content.BlockList[content.BlockList.Length - 1]);
+
+
+        }
         bool? elCheckedHolder;
         BuildingBlock priConHolder;
         BuildingBlock priActHolder;
+        BuildingBlock elseActHolder;
         public int IfElseNumber
         {
             get { return (int)GetValue(IfElseNumberProperty); }
@@ -76,7 +90,7 @@ namespace grabbableBlocks.CustomControls
                 MinWidth = 60,
                 Margin = new Thickness(0, 0, 0, 10),
                 Orientation = Orientation.Horizontal,
-                Background = CanvasColor,
+                Background = BlockBuildingCanvas.CanvasColor,
                 AllowDrop = true,
             };
             lablePanel.Children.Add(conditionHolder);
@@ -90,7 +104,7 @@ namespace grabbableBlocks.CustomControls
                 MinWidth = 60,
                 Margin = new Thickness(0, 0, 0, 10),
                 Orientation = Orientation.Horizontal,
-                Background = CanvasColor,
+                Background = BlockBuildingCanvas.CanvasColor,
                 AllowDrop = true,
             };
             DoPanel.Children.Add(contentHolder);
@@ -148,6 +162,9 @@ namespace grabbableBlocks.CustomControls
                 MainConPanel.Children.Add(priConHolder);
             if (priActHolder != null)
                 DOValuePanel.Children.Add(priActHolder);
+            if (elseActHolder != null)
+                ElseDoDataPanel.Children.Add(elseActHolder);
+            
 
             IfsStack = (StackPanel)Template.FindName("PART_IfsStack", this);
 
@@ -160,9 +177,15 @@ namespace grabbableBlocks.CustomControls
 
 
             if (elCheckedHolder == true)
+            {
                 ElseVisible = Visibility.Visible;
+                ElseEnabled.IsChecked = true;
+            }
             else
+            {
                 ElseVisible = Visibility.Collapsed;
+                ElseEnabled.IsChecked = false;
+            }
 
             if (IfsStack != null)
             {
@@ -311,10 +334,13 @@ namespace grabbableBlocks.CustomControls
                     content.BlockList[i + 3] = GetBuildingBlockOrNull(GetDoActionStack(i)).GetData();
             }
 
+            if (ElseEnabled.IsChecked.Value)
+                content.BlockList[contentNumber - 1] = GetBuildingBlockOrNull(ElseDoDataPanel).GetData();
+
             content.ContentProperties = new object[2];
 
             //else is Enabled
-            content.ContentProperties[0] = ElseEnabled.IsChecked.Value;
+            content.ContentProperties[0] = ElseEnabled.IsChecked.Value == true? true: false;//clean this later
             //number of else ifs
             content.ContentProperties[1] = ifDoList.Count;
 

@@ -48,6 +48,8 @@ namespace grabbableBlocks.CustomControls
 
             result += GetBuildingBlockOrNull(DOValuePanel) == null? "\"Empty\"": GetBuildingBlockOrNull(DOValuePanel).GetCode();
 
+            result += "\nEND";
+
             return result;
         }
 
@@ -56,7 +58,8 @@ namespace grabbableBlocks.CustomControls
             SingleContent content = new SingleContent();
             content.ContentType = GetType().ToString();
             content.BlockList = new SingleBlock[1];
-            content.BlockList[0] = GetBuildingBlockOrNull(DOValuePanel).GetData();
+            if(GetBuildingBlockOrNull(DOValuePanel) != null)
+                content.BlockList[0] = GetBuildingBlockOrNull(DOValuePanel).GetData();
 
             return content;
         }

@@ -25,9 +25,9 @@ namespace grabbableBlocks.CustomControls
         public ContentBlockMathOperation(SingleContent content)
         {
             selectedItem = content.ContentProperties[0];
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[0] != null)
                 LeftValuePanelHolder = new BuildingBlock(content.BlockList[0]);
-            if (content.BlockList != null)
+            if (content.BlockList != null && content.BlockList[1] != null)
                 RightValuePanelkHolder = new BuildingBlock(content.BlockList[1]);
         }
 
@@ -52,12 +52,16 @@ namespace grabbableBlocks.CustomControls
             if (RightValuePanelkHolder != null)
                 RightValuePanel.Children.Add(RightValuePanelkHolder);
 
-            foreach (object item in comboxOperator.Items)
+            if(selectedItem != null)
             {
-                if (item.ToString() == selectedItem.ToString())
+                foreach (object item in comboxOperator.Items)
                 {
-                    comboxOperator.SelectedItem = item;
+                    if (item.ToString() == selectedItem.ToString())
+                    {
+                        comboxOperator.SelectedItem = item;
+                    }
                 }
+
             }
 
 
@@ -92,8 +96,10 @@ namespace grabbableBlocks.CustomControls
             content.ContentProperties[0] = comboxOperator.SelectedItem == null ? "+" : comboxOperator.SelectedItem.ToString();
 
             content.BlockList = new SingleBlock[2];
-            content.BlockList[0] = GetBuildingBlockOrNull(LeftValuePanel).GetData();
-            content.BlockList[1] = GetBuildingBlockOrNull(RightValuePanel).GetData();
+            if(GetBuildingBlockOrNull(LeftValuePanel) != null)
+                content.BlockList[0] = GetBuildingBlockOrNull(LeftValuePanel).GetData();
+            if (GetBuildingBlockOrNull(RightValuePanel) != null)
+                content.BlockList[1] = GetBuildingBlockOrNull(RightValuePanel).GetData();
 
             return content;
         }

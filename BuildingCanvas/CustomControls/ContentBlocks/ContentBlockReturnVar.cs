@@ -34,12 +34,16 @@ namespace grabbableBlocks.CustomControls
 
             comboxVar = (ComboBox)Template.FindName("PART_Combobox", this);
             comboxVar.ItemsSource = BlockBuildingCanvas.VariableList;
-            foreach (object item in comboxVar.Items)
+            if (selectedItem != null)
             {
-                if (item.ToString() == selectedItem.ToString())
+                foreach (object item in comboxVar.Items)
                 {
-                    comboxVar.SelectedItem = item;
+                    if (item.ToString() == selectedItem.ToString())
+                    {
+                        comboxVar.SelectedItem = item;
+                    }
                 }
+
             }
 
             base.OnApplyTemplate();
@@ -56,7 +60,7 @@ namespace grabbableBlocks.CustomControls
             content.ContentType = GetType().ToString();
 
             content.ContentProperties = new object[1];
-            content.ContentProperties[1] = comboxVar.SelectedItem;
+            content.ContentProperties[0] = comboxVar.SelectedItem;
 
             return content;
         }

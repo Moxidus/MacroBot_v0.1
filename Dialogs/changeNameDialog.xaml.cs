@@ -26,12 +26,14 @@ namespace MacroBot_v0._1
         /// Opens dialog that user can enter variable name to
         /// </summary>
         /// <returns>Returns variable name in form of string</returns>
-        public string GetName()
+        public static string GetName(Window owner)
         {
-            VarNameTextBox.Focus();
-            if(ShowDialog() == true)
+            changeNameDialog nameDialog = new changeNameDialog();
+            nameDialog.Owner = owner;
+            nameDialog.VarNameTextBox.Focus();
+            if(nameDialog.ShowDialog() == true)
             {
-                return VarNameTextBox.Text;
+                return nameDialog.VarNameTextBox.Text;
             }
             return null;
         }

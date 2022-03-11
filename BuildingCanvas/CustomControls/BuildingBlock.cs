@@ -82,7 +82,8 @@ namespace grabbableBlocks.CustomControls
         }
 
 
-        public BuildingBlock(SingleBlock meData) {//TODO: finish
+        public BuildingBlock(SingleBlock meData) {
+
 
             Foreground = new SolidColorBrush(Colors.White);
             CanvasColor = BlockBuildingCanvas.CanvasColor;
@@ -102,8 +103,25 @@ namespace grabbableBlocks.CustomControls
 
         }
 
+        public static BuildingBlock CreateBlockOrStart(SingleBlock meData)
+        {
+            if (Type.GetType(meData.InsideContent.ContentType) != typeof(BuildingBlockStart))
+                return new BuildingBlock(meData);
 
-        UIElement NextChild;
+            BuildingBlockStart startBlock = new BuildingBlockStart();
+
+            Canvas.SetLeft(startBlock, meData.Pos.X);
+            Canvas.SetTop(startBlock, meData.Pos.Y);
+            
+            if (meData.NextContent != null)
+                startBlock.NextChild = new BuildingBlock(meData.NextContent);
+
+            return startBlock;
+
+        }
+
+
+        public UIElement NextChild;//is public because BBStart needs it
         UIElement InputChild;
         protected StackPanel nextCommandPanel;
         protected StackPanel inputDataPanel;
@@ -235,7 +253,7 @@ namespace grabbableBlocks.CustomControls
             return result;
         }
 
-        public SingleBlock GetData()
+        public virtual SingleBlock GetData()
         {
             SingleBlock block = new SingleBlock();
 

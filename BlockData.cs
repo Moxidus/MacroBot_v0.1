@@ -10,6 +10,7 @@ namespace MacroBot_v0._1
     class BlockData
     {
         public AssetHolder[] savedImages { get; set; }
+        public string[] variables { get; set; }
         public List<SingleBlock> Blocks { get; set; }
         public BlockData()
         {
@@ -24,14 +25,14 @@ namespace MacroBot_v0._1
             {
 
             }
-            public AssetHolder(byte[] assetBytes, string assetName, System.Drawing.Size assetSize)
+            public AssetHolder(string assetBase64, string assetName, System.Drawing.Size assetSize)
             {
-                AssetBytes = assetBytes;
+                AssetBase64 = assetBase64;
                 AssetName = assetName;
                 AssetSize = assetSize;
             }
 
-            public byte[] AssetBytes { get; set; }
+            public string AssetBase64 { get; set; }
             public string AssetName { get; set; }
             public System.Drawing.Size AssetSize { get; set; }
 
