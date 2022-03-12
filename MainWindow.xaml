@@ -8,7 +8,7 @@
         xmlns:custom="clr-namespace:grabbableBlocks.CustomControls"
         mc:Ignorable="d"
         Icon="/Assets/logo.png"
-        Title="Macro Bot" Height="700" Width="1200">
+        Title="Macro Bot" Height="700" Width="1200" Background="#FF525252" Foreground="#FFE6E6E6" KeyDown="Window_KeyDown">
 
 
 
@@ -42,10 +42,10 @@
         <DockPanel Grid.ColumnSpan="7">
             <Menu DockPanel.Dock="Top" Background="#FF414141" Foreground="White">
                 <MenuItem Header="_File" BorderBrush="{x:Null}">
-                    <MenuItem Header="_New" Foreground="Black" Click="createNew"/>
-                    <MenuItem Header="_Open" Foreground="Black" Click="OpenFile"/>
-                    <MenuItem Header="_Save" Foreground="Black" Click="SaveFile"/>
-                    <MenuItem Header="_Save as" Foreground="Black" Click="SaveAsDialog"/>
+                    <MenuItem Header="_New (ctrl+n)" Foreground="Black" Click="createNew"/>
+                    <MenuItem Header="_Open (ctrl+o)" Foreground="Black" Click="OpenFile"/>
+                    <MenuItem Header="_Save (ctrl+s)" Foreground="Black" Click="SaveFile"/>
+                    <MenuItem Header="_Save as (ctrl+shift+s)" Foreground="Black" Click="SaveAsDialog"/>
                     <MenuItem Header="_Exit" Foreground="Black"/>
                 </MenuItem>
                 <MenuItem Header="_Edit" BorderBrush="{x:Null}">
@@ -59,39 +59,48 @@
                     Grid.Row="2"
                     HorizontalAlignment="Left"
                     Orientation="Horizontal" Margin="332,0,0,0">
-            <Button Click="StartProgram">
-                <TextBlock Text="Start"/>
+            <Button Click="StartProgram"
+                    Background="#FFCA3E47" BorderBrush="#FF9E213D" BorderThickness="4"  Padding="3 0 3 0">
+                <TextBlock Text="Start" FontWeight="Bold" Foreground="#FFE6E6E6" FontSize="12"/>
             </Button>
-            <Button Click="Button_Click_1">
-                <TextBlock Text="Block Editor"/>
+            <Button x:Name="IFswitchButton"
+                    Click="SwitchEditors"
+                    Background="#FF313131" BorderBrush="#FF313131" BorderThickness="0" Padding="3" Foreground="#FFE6E6E6">
+                <TextBlock Text="Switch to Block Builder" FontWeight="Bold" Foreground="#FFE6E6E6"  FontSize="12"/>
             </Button>
         </StackPanel>
         <RichTextBox x:Name="scriptCode" 
                      Grid.Column="2"
                      Grid.Row="3" 
                      Background="#FF313131"
-                     BorderBrush="{x:Null}"
-                     Foreground="White" AcceptsTab="True" Grid.ColumnSpan="4" Grid.RowSpan="2">
+                     Foreground="White" AcceptsTab="True" Grid.ColumnSpan="4" Grid.RowSpan="2" FontSize="16" FontFamily="Arial">
         </RichTextBox>
 
         <TextBlock Text="Assets:"
                    Foreground="White"
                    Grid.Row="5" Grid.Column="2"
-                   Margin="5 0 0 0"
-            />
+                   Margin="5 0 0 0"/>
         <ListBox x:Name="AssetsList"
                  Grid.Column="2"
                  Grid.Row="5"
-                 Grid.ColumnSpan="4"
+                 Grid.ColumnSpan="3"
                  Background="#FF313131"
                  Foreground="White" Margin="0,15,0,0" Grid.RowSpan="2"/>
 
+        <StackPanel Grid.Row="6" Grid.Column="5">
+            <Button Content="Delete Image"
+                            Margin="10 10 10 0"
+                            BorderThickness="3"
+                            Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
+        </StackPanel>
+        
+        
 
-        <Grid x:Name="BlockCanvas" Grid.Row="3" Grid.Column="2" Grid.RowSpan="4" Grid.ColumnSpan="4"
+        <Grid x:Name="BlockCanvas" Grid.Row="3" Grid.Column="1" Grid.RowSpan="4" Grid.ColumnSpan="5"
                     Background="#FF525252" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="96*"/>
-                <ColumnDefinition Width="505*"/>
+                <ColumnDefinition Width="200px"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -99,13 +108,12 @@
 
             <ScrollViewer  Grid.Column="1" HorizontalScrollBarVisibility="Visible">
                 <custom:BlockBuildingCanvas x:Name="CustomCanvas" AllowDrop="True" Background="#FF313131"
-                                        Width="1500" Height="1500">
+                                        Width="3000" Height="3000">
                 </custom:BlockBuildingCanvas>
             </ScrollViewer>
 
-            <ScrollViewer>
-
-                <StackPanel Background="#FF525252">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" >
+                <StackPanel Background="#FF525252" RenderTransformOrigin="0.5,0.5">
                     <Button Margin="10 10 10 0"
                     BorderThickness="3"
                     Content="Insert variable block" Background="#FF313131" BorderBrush="#FF414141" FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
@@ -157,33 +165,60 @@
                     <Button Margin="10 10 10 0"
                     BorderThickness="3"
                     Content="Start block" Background="#FF313131" BorderBrush="#FF414141" FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
-                    <Button Margin="10 10 10 0"
-                    BorderThickness="3"
-                    Content="Generate code" Background="#FFCA3E47" BorderBrush="#FF9E213D" FontWeight="Bold" Foreground="#FFE6E6E6" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
-                    <TextBox Margin="10 10 10 0" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5"
-                         BorderThickness="3"
-                         x:Name="VarNameTextBox"/>
-                    <Button Margin="10 10 10 0"
-                    BorderThickness="3"
-                    Content="Add variable" Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
-                    <Button Margin="10 10 10 0"
-                    BorderThickness="3"
-                    Content="Delete variable" Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
-                    <ListBox  Margin="10 10 10 0" MinHeight="32px"                       
-                              Name="VarListBox"
-                              BorderThickness="3" BorderBrush="#FFABADB3"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="12" RenderTransformOrigin="0.5,0.5">
+                    <Button Content="Generate code" 
+                            Margin="10 10 10 0"
+                            BorderThickness="3" Background="#FFCA3E47" BorderBrush="#FF9E213D" FontWeight="Bold" Foreground="#FFE6E6E6" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
 
-                    </ListBox>
-                    <Button Margin="10 10 10 0"
-                    BorderThickness="3"
-                    Content="Open Image" Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click_2"/>
-
-
+                    <Grid Margin="10 10 10 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="10px"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="VarNameTextBox"
+                                 Grid.ColumnSpan="2"
+                                 FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5"
+                                 BorderThickness="3"/>
+                        <Button Content="+"
+                                Grid.Row="2"
+                                BorderThickness="3" FontWeight="Bold" FontFamily="Dubai" FontSize="40" RenderTransformOrigin="0.5,0.5"
+                                Background="#FF313131" BorderBrush="#FF414141" Foreground="#FFC7C7C7" 
+                                Padding="-20"
+                                MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"                       
+                                />
+                        <Button Content="-"
+                                Grid.Row="2" Grid.Column="1"
+                                BorderThickness="3" FontWeight="Bold" FontFamily="Dubai" FontSize="40" RenderTransformOrigin="0.5,0.5"
+                                Background="#FF313131" BorderBrush="#FF414141" Foreground="#FFC7C7C7" 
+                                Padding="-20"
+                                MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
+                    </Grid>
+                    <Label Content="Variables"
+                           Margin="10 10 10 -12" Padding="0"
+                           FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" />
+                    <ListBox Name="VarListBox"
+                             Margin="10 10 10 0" MinHeight="32px"
+                             BorderThickness="3" BorderBrush="#FFABADB3"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="12" RenderTransformOrigin="0.5,0.5"/>
+                    <Label Content="Images"
+                           Margin="10 10 10 -12" Padding="0"
+                           FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" />
+                    <ListBox Name="ImageListBox"
+                             Margin="10 10 10 0" MinHeight="32px"
+                             BorderThickness="3" BorderBrush="#FFABADB3"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="12" RenderTransformOrigin="0.5,0.5"/>
+                    <Button Content="Delete Image"
+                            Margin="10 10 10 0"
+                            BorderThickness="3"
+                            Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
+                    <Button Content="Open Image"
+                            Margin="10 10 10 0"
+                            BorderThickness="3"
+                            Background="#FF313131" BorderBrush="#FF414141"  FontWeight="Bold" Foreground="#FFC7C7C7" FontFamily="Dubai" FontSize="16" RenderTransformOrigin="0.5,0.5" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Click="Button_Click"/>
                 </StackPanel>
             </ScrollViewer>
-
         </Grid>
-
-
     </Grid>
 </Window>

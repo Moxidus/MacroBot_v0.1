@@ -61,8 +61,12 @@ namespace MacroBot_v0._1
             scriptCode.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
             scriptCode.Document.PageWidth = 1000;
             scriptCode.Document.Blocks.Clear();
+            scriptCode.SetValue(Block.LineHeightProperty, 1.0);
+
 
             VarListBox.ItemsSource = BlockBuildingCanvas.VariableList;
+            ImageListBox.ItemsSource = BlockBuildingCanvas.ImageList;
+            AssetsList.ItemsSource = BlockBuildingCanvas.ImageList;
         }
 
 
@@ -86,22 +90,38 @@ namespace MacroBot_v0._1
 
                 screenCrop.name = changeNameDialog.GetName(this);
 
-
-                AssetsList.Items.Add(screenCrop);
-                BlockBuildingCanvas.VariableList.Add(screenCrop.ToString());
+                if (variableNameExists(screenCrop.name))
+                {
+                    screenCrop.asset.Dispose();
+                    return;
+                }
+                
+                BlockBuildingCanvas.ImageList.Add(screenCrop);
             });
-
-
-
         }
+
+        private bool variableNameExists(string varName)
+        {
+            if (BlockBuildingCanvas.ImageList.Any(x => x.name == varName) || BlockBuildingCanvas.VariableList.Contains(varName))
+                return true;
+            return false;
+        }
+
         public void createNew(object sender, RoutedEventArgs e)
         {
             WantToSaveDialog saveIt = new WantToSaveDialog();
             if (saveIt.SaveItDialog(this))
                 SaveFile(sender, e);
+
+            //resets the variables
+            BlockBuildingCanvas.VariableList.Clear();
+            for (int i = 0; i < BlockBuildingCanvas.GlobalVariables.Length; i++)
+                BlockBuildingCanvas.VariableList.Add(BlockBuildingCanvas.GlobalVariables[i]);
+
             deleteImages();
-            scriptCode.Document.Blocks.Clear();
-            EditingFilePath = "";
+            scriptCode.Document.Blocks.Clear();//clears script editor
+            CustomCanvas.Children.Clear();//clears blocks
+            EditingFilePath = "";//clears saved path
         }
 
         private void deleteImages()
@@ -110,9 +130,8 @@ namespace MacroBot_v0._1
             {
                 item.asset.Dispose();
             }
-            AssetsList.Items.Clear();
+            BlockBuildingCanvas.ImageList.Clear();
         }
-
         private void SaveAsDialog(object sender, RoutedEventArgs e)
         {
             SaveAsQuestionWindow DialogSaveAs = new SaveAsQuestionWindow();
@@ -155,10 +174,10 @@ namespace MacroBot_v0._1
         {
             BlockData data = new BlockData();
 
-            data.savedImages = new AssetHolder[AssetsList.Items.Count];
-            for (int i = 0; i < AssetsList.Items.Count; i++)
+            data.savedImages = new AssetHolder[BlockBuildingCanvas.ImageList.Count];
+            for (int i = 0; i < BlockBuildingCanvas.ImageList.Count; i++)
             {
-                AssetItem item = AssetsList.Items[i] as AssetItem;
+                AssetItem item = BlockBuildingCanvas.ImageList[i];
                 data.savedImages[i] = new AssetHolder(ImageConvertor.ImageToBase64String(item.asset), item.name, item.asset.Size);
             }
 
@@ -203,8 +222,6 @@ namespace MacroBot_v0._1
             if (results != true)
                 return;
 
-
-
             string path = openFile.FileName;
             EditingFilePath = path;
 
@@ -233,6 +250,10 @@ namespace MacroBot_v0._1
             scriptCode.Document.Blocks.Add(new Paragraph(new Run(data.script)));
 
 
+            //switching to Block editor interface
+            BlockCanvas.Visibility = Visibility.Collapsed;
+            IFswitchButton.Content = "Switch to Block Builder";
+
             AssetLoader(data.savedImages);
         }
 
@@ -250,38 +271,22 @@ namespace MacroBot_v0._1
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            //TODO: load blocks in
-
-            CustomCanvas.Children.Clear();
 
             foreach(SingleBlock block in data.Blocks)
             {
-                callBlock(block, "");
                 CustomCanvas.Children.Add(BuildingBlock.CreateBlockOrStart(block));
             }
-
-            //Load variables
             BlockBuildingCanvas.VariableList.Clear();
             for(int i = 0; i < data.variables.Length; i++)
             {
                 BlockBuildingCanvas.VariableList.Add(data.variables[i]);
             }
 
+            //switching to Block editor interface
+            BlockCanvas.Visibility = Visibility.Visible;
+            IFswitchButton.Content = "Switch to Text Editor";
 
             AssetLoader(data.savedImages);
-        }
-        //Just debug class delete this
-        private void callBlock(SingleBlock block, string offset)
-        {
-            
-            if (block == null)
-                return;
-            Debug.Write(offset);
-            Type tp = Type.GetType(block.InsideContent.ContentType, new bool());
-            Debug.WriteLine(tp + $"x: {block.Pos.X} y: {block.Pos.Y}");//TODO: create special constructor for every type that is going to create it self with given parameters
-            offset += "\t";
-            callBlock(block.NextContent, offset);
-
         }
 
         private void AssetLoader(AssetHolder[] assets)
@@ -293,40 +298,13 @@ namespace MacroBot_v0._1
                 img.Bytes = ImageConvertor.ByteFromBase64String(item.AssetBase64);
                 AssetItem newAsset = new AssetItem(img, item.AssetName);
 
-                AssetsList.Items.Add(newAsset);
+                BlockBuildingCanvas.ImageList.Add(newAsset);
             }
         }
 
         private void StartProgram(object sender, RoutedEventArgs e)
         {
-            SaveFile(sender, e);
-
-            List<string> paths = saveAssetsToTemp();
-            string codePath = saveCodeToTemp();
-
-            string PathPara = "";
-            if (paths.Count > 0)
-                paths.ForEach(x => PathPara += x + " ");
-
-
-            string output;
-            using (System.Diagnostics.Process pProcess = new System.Diagnostics.Process())
-            {
-                pProcess.StartInfo.FileName = @"External\MacroBotV0.1Language.exe";
-                pProcess.StartInfo.Arguments = $"-f \"{codePath}\""; //argument
-
-                if (PathPara != "")
-                    pProcess.StartInfo.Arguments += $" -a \"{PathPara}\""; //assets
-
-                pProcess.StartInfo.UseShellExecute = false;
-                pProcess.StartInfo.RedirectStandardOutput = true;
-                pProcess.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Normal;
-                pProcess.StartInfo.CreateNoWindow = false; //not diplay a windows
-                pProcess.Start();
-                output = pProcess.StandardOutput.ReadToEnd(); //The output result
-                pProcess.WaitForExit();
-            }
-            MessageBox.Show(output);
+            CodePlayer.StartCode(saveAssetsToTemp(), saveCodeToTemp());
         }
 
         private List<string> saveAssetsToTemp()
@@ -375,11 +353,14 @@ namespace MacroBot_v0._1
         {
             (sender as Button).RenderTransform = new ScaleTransform(1, 1);
         }
-
+        /// <summary>
+        /// Does action based on button name
+        /// </summary>
+        /// <param name="Button"></param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            Debug.WriteLine("Clicked: " + btn.Content);
 
             if (btn.Content.ToString() == "Insert variable block")
                 CreateBlock(new ContentBlockReturnValue());
@@ -430,17 +411,44 @@ namespace MacroBot_v0._1
                 }
 
             }
-            else if (btn.Content.ToString() == "Add variable")
+            else if (btn.Content.ToString() == "+")
             {
-                if (VarNameTextBox.Text == "" || VarNameTextBox.Text.Contains(' ') || VarListBox.Items.Contains(VarNameTextBox.Text)) return;
+                if (BlockBuildingCanvas.VariableList.Contains(VarNameTextBox.Text)
+                    || BlockBuildingCanvas.ImageList.Any(x => x.name == VarNameTextBox.Text)
+                    || VarNameTextBox.Text.Any(x => !BlockBuildingCanvas.DIGITSNLETTERS.Contains(x)))//checks that it does not contain an illegal character
+                    return;
                 BlockBuildingCanvas.VariableList.Add(VarNameTextBox.Text);
                 VarNameTextBox.Text = "";
             }
-            else if (btn.Content.ToString() == "Delete variable")
+            else if (btn.Content.ToString() == "-")
             {
+                if (BlockBuildingCanvas.GlobalVariables.Any(x => x == VarListBox.SelectedItem.ToString()))
+                    return;
                 BlockBuildingCanvas.VariableList.Remove(VarListBox.SelectedItem.ToString());
             }
+            else if (btn.Content.ToString() == "Delete Image")
+            {
+                if(BlockCanvas.Visibility == Visibility.Visible)
+                {
+                    if (ImageListBox.SelectedIndex == -1)
+                        return;
+                    (ImageListBox.SelectedItem as AssetItem).asset.Dispose();
+                    BlockBuildingCanvas.ImageList.Remove(ImageListBox.SelectedItem as AssetItem);
+                    return;
+                }
 
+                if (AssetsList.SelectedIndex == -1)
+                    return;
+                (AssetsList.SelectedItem as AssetItem).asset.Dispose();
+                BlockBuildingCanvas.ImageList.Remove(AssetsList.SelectedItem as AssetItem);
+            }
+            else if (btn.Content.ToString() == "Open Image")
+            {
+                if (ImageListBox.SelectedIndex == -1)
+                    return;
+                ImageViewer.ShowImage((ImageListBox.SelectedItem as AssetItem).asset, this);
+                
+            }
         }
 
         private void CreateBlock(ContentBlock content)
@@ -453,29 +461,40 @@ namespace MacroBot_v0._1
             Canvas.SetTop(block, 50);
             CustomCanvas.Children.Add(block);
         }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void SwitchEditors(object sender, RoutedEventArgs e)
         {
             if (BlockCanvas.Visibility == Visibility.Collapsed)
-                BlockCanvas.Visibility = Visibility.Visible;
-            else
-                BlockCanvas.Visibility = Visibility.Collapsed;
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            if(VarListBox.SelectedIndex != -1)
             {
-                foreach (AssetItem item in AssetsList.Items)
-                {
-                    Debug.WriteLine(VarListBox.SelectedItem.ToString() + " == " + item.name);
-                    if(VarListBox.SelectedItem.ToString() == item.name)
-                    {
-                        ImageViewer.ShowImage(item.asset);
-                        break;
-                    }
-                }
+                BlockCanvas.Visibility = Visibility.Visible;
+                (sender as Button).Content = "Switch to Text Editor";
+                return;
             }
+            BlockCanvas.Visibility = Visibility.Collapsed;
+            (sender as Button).Content = "Switch to Block Builder";
+
+        }
+        /// <summary>
+        /// Exetutes registered shortcuts
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+                return;
+            if (Keyboard.IsKeyDown(Key.LeftShift))
+            {
+                if (Keyboard.IsKeyDown(Key.S))//Save as
+                    SaveAsDialog(null, null);
+                return;
+            }
+
+            if (Keyboard.IsKeyDown(Key.N))//Create new
+                createNew(null, null);
+            if (Keyboard.IsKeyDown(Key.O))//Open project
+                OpenFile(null, null);
+            if (Keyboard.IsKeyDown(Key.S))//Save
+                SaveFile(null, null);
         }
     }
 }

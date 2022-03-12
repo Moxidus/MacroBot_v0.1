@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MacroBot_v0._1;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -17,6 +18,11 @@ namespace grabbableBlocks.CustomControls
         private BuildingBlock DraggedObject;
 
         public static ObservableCollection<string> VariableList = new ObservableCollection<string>();
+        public static ObservableCollection<AssetItem> ImageList = new ObservableCollection<AssetItem>();
+
+        public static string DIGITS = "0123456789";
+        public static string LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_";
+        public static string DIGITSNLETTERS = DIGITS+LETTERS;
 
         public static DragEventHandler CanvasInputDropEvent;
         public static DragEventHandler CanvasCommandDropEvent;
@@ -29,13 +35,12 @@ namespace grabbableBlocks.CustomControls
 
         public static Brush CanvasColor;
 
-        protected override void OnInitialized(EventArgs e)
-        {
-            VariableList.Add("PI");
-            VariableList.Add("TRUE");
-            VariableList.Add("FALSE");
-            VariableList.Add("NULL");
+        public static string[] GlobalVariables = {"PI","TRUE","FALSE", "NULL"};
 
+    protected override void OnInitialized(EventArgs e)
+        {
+            for (int i = 0; i < GlobalVariables.Length; i++)
+                VariableList.Add(GlobalVariables[i]);
 
             DragOver += Canvas_DragOver;
             CanvasInputDropEvent = Input_Drop;

@@ -25,9 +25,10 @@ namespace MacroBot_v0._1
             ImageWindow.SnapsToDevicePixels = true;
         }
 
-        public static void ShowImage(Image<Bgra, byte> imageToShow)
+        public static void ShowImage(Image<Bgra, byte> imageToShow, Window owner)
         {
             ImageViewer viewer = new ImageViewer();
+            viewer.Owner = owner;
             viewer.ImageWindow.Source = ImageConvertor.ToBitmapSource(imageToShow);
             viewer.Show();
         }

@@ -1,0 +1,36 @@
+﻿<Window x:Class="MacroBot_v0._1.Dialogs.CodePlayer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MacroBot_v0._1.Dialogs"
+        mc:Ignorable="d"
+     Title="Player" MinHeight="25" Height="200" Width="350" Background="#FF525252" Opacity="0.6" AllowsTransparency="True" WindowStyle="None"
+        WindowStartupLocation="Manual" Left="0" Top="0" RenderTransformOrigin="0.5,0.5" ResizeMode="NoResize" KeyDown="Window_KeyDown">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition x:Name="consoleWindow" Height="*" MinHeight="0" MaxHeight="190"/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Ctrl+p to stop" FontSize="11" FontFamily="Dubai" Foreground="#FFE6E6E6" Background="{x:Null}"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Content="Exit" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="ExitProcess"/>
+            <Button Content="Stop" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="StopProcess"/>
+            <Button Content="Hide" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="HideProcess"/>
+        </StackPanel>
+
+        <avalonEdit:TextEditor Height="auto"
+                xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+                Grid.Row="1" Grid.Column="0"
+                   Foreground="White"
+                    Background="Transparent"
+                   Text="starting...\n"
+                   x:Name="ConsoleOutput" FontFamily="Global Monospace"/>
+        
+    </Grid>
+</Window>
+
