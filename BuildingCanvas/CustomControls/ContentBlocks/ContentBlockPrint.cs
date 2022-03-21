@@ -11,16 +11,18 @@ namespace grabbableBlocks.CustomControls
 {
     class ContentBlockPrint : ContentBlock, ICode, IPrevCommand, INextCommand, IInputCommand
     {
-
         static ContentBlockPrint()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockPrint), new FrameworkPropertyMetadata(typeof(ContentBlockPrint)));
         }
 
-        public ContentBlockPrint() { }
+        public ContentBlockPrint()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.TextContent };
+        }
         public ContentBlockPrint(SingleContent content)
         {
-
+            AcceptedTypes = new ContentTypes[] { ContentTypes.TextContent };
         }
 
         Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));

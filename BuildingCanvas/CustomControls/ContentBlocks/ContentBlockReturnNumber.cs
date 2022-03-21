@@ -8,18 +8,21 @@ using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
-    class ContentBlockReturnValue: ContentBlock, ICode, IReturnCommand
+    class ContentBlockReturnNumber: ContentBlock, ICode, IReturnCommand
     {
-
-        static ContentBlockReturnValue()
+        static ContentBlockReturnNumber()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockReturnValue), new FrameworkPropertyMetadata(typeof(ContentBlockReturnValue)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockReturnNumber), new FrameworkPropertyMetadata(typeof(ContentBlockReturnNumber)));
         }
 
 
-        public ContentBlockReturnValue() { }
-        public ContentBlockReturnValue(SingleContent content)
+        public ContentBlockReturnNumber()
         {
+            ContentType = ContentTypes.NumberContent;
+        }
+        public ContentBlockReturnNumber(SingleContent content)
+        {
+            ContentType = ContentTypes.NumberContent;
             SettingValue = content.ContentProperties[0].ToString();
         }
 

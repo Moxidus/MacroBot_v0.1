@@ -29,10 +29,18 @@ namespace MacroBot_v0._1.Dialogs
         System.Diagnostics.Process pProcess = new System.Diagnostics.Process();
         DispatcherTimer remainTimer = new DispatcherTimer();
 
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            Window window = (Window)sender;
+            window.Topmost = true;
+        }
+
 
         public CodePlayer(List<string> paths, string codePath)
         {
             InitializeComponent();
+
+            Deactivated += Window_Deactivated;
 
             string PathPara = "";
             if (paths.Count > 0)
@@ -70,13 +78,21 @@ namespace MacroBot_v0._1.Dialogs
         }
 
 
-
-        public static void StartCode(List<string> paths, string codePath)
+        /// <summary>
+        /// Executes script by passing all the requred data and manages the process
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <param name="codePath"></param>
+        /// <param name="owner"></param>
+        public static void StartCode(List<string> paths, string codePath, Window owner)
         {
             if (Player != null)
                 Player.Close();
+            owner.Hide();
+            Thread.Sleep(300);//waits for the Owner Window to close
             Player = new CodePlayer(paths, codePath);
             Player.Show();
+            Player.Owner = owner;
            
         }
         public void displayData()
@@ -96,6 +112,7 @@ namespace MacroBot_v0._1.Dialogs
         protected override void OnClosed(EventArgs e)
         {
             pProcess.Kill();
+            Owner.Show();
             pProcess.Dispose();
             base.OnClosed(e);
         }
@@ -103,12 +120,14 @@ namespace MacroBot_v0._1.Dialogs
         private void ExitProcess(object sender, RoutedEventArgs e)
         {
             pProcess.Kill();
+            Owner.Show();
             Close();
         }
 
         private void StopProcess(object sender, RoutedEventArgs e)
         {
             pProcess.Kill();
+            Owner.Show();
         }
 
         private void HideProcess(object sender, RoutedEventArgs e)

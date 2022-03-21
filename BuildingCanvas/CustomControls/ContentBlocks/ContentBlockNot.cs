@@ -15,10 +15,15 @@ namespace grabbableBlocks.CustomControls
         }
 
 
-        public ContentBlockNot() { }
+        public ContentBlockNot()
+        {
+            AcceptedTypes = new ContentTypes[]{ ContentTypes.BoolContent };
+            ContentType = ContentTypes.BoolContent;
+        }
         public ContentBlockNot(SingleContent content)
         {
-
+            AcceptedTypes = new ContentTypes[] { ContentTypes.BoolContent };
+            ContentType = ContentTypes.BoolContent;
         }
 
         Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));

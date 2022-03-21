@@ -21,9 +21,16 @@ namespace grabbableBlocks.CustomControls
         private StackPanel RightValuePanel;
 
 
-        public ContentBlockMathOperation() { }
+        public ContentBlockMathOperation()
+        {
+            AcceptedTypes = new ContentTypes[]{ ContentTypes.AllContent };
+            ContentType = ContentTypes.AllContent;
+        }
         public ContentBlockMathOperation(SingleContent content)
         {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.AllContent };
+            ContentType = ContentTypes.AllContent;
+
             selectedItem = content.ContentProperties[0];
             if (content.BlockList != null && content.BlockList[0] != null)
                 LeftValuePanelHolder = new BuildingBlock(content.BlockList[0]);

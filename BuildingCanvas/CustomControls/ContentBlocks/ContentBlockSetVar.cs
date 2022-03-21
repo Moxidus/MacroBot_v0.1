@@ -15,9 +15,13 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockSetVar), new FrameworkPropertyMetadata(typeof(ContentBlockSetVar)));
         }
 
-        public ContentBlockSetVar() { }
+        public ContentBlockSetVar()
+        {
+            AcceptedTypes = new ContentTypes[]{ ContentTypes.AllContent };
+        }
         public ContentBlockSetVar(SingleContent content)
         {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.AllContent };
             selectedItem = content.ContentProperties[0];
         }
 

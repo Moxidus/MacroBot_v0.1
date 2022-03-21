@@ -11,17 +11,19 @@ namespace grabbableBlocks.CustomControls
 {
     class ContentBlockStart : ContentBlock, ICode, IInputCommand, INextCommand, IPrevCommand
     {
-
         static ContentBlockStart()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockStart), new FrameworkPropertyMetadata(typeof(ContentBlockStart)));
         }
 
 
-        public ContentBlockStart() { }
+        public ContentBlockStart()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.TextContent };
+        }
         public ContentBlockStart(SingleContent content)
         {
-
+            AcceptedTypes = new ContentTypes[] { ContentTypes.TextContent };
         }
 
 

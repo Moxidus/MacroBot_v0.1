@@ -130,11 +130,12 @@ namespace grabbableBlocks.CustomControls
         private void NextCommand_Drop(object sender, DragEventArgs e)
         {
             e.Handled = true;
-            if (DraggedObject.MainContent is INextCommand == false)
-                return;
+
             StackPanel newParent = (StackPanel)sender;
             Panel oldParent = (Panel)DraggedObject.Parent;
 
+            if (DraggedObject.MainContent is INextCommand == false)
+                return;
 
 
             if (DraggedObject is BuildingBlockStart || DraggedObject == newParent.TemplatedParent)
@@ -155,17 +156,13 @@ namespace grabbableBlocks.CustomControls
         private void Input_Drop(object sender, DragEventArgs e)
         {
             e.Handled = true;
-            if (DraggedObject.MainContent is IReturnCommand == false)
-                return;
             StackPanel newParent = (StackPanel)sender;
             Panel oldParent = (Panel)DraggedObject.Parent;
 
-            if ( DraggedObject is BuildingBlockStart || DraggedObject == newParent.TemplatedParent)
-                return;
-
-            if (newParent.TemplatedParent is ContentBlock && DraggedObject == (newParent.TemplatedParent as ContentBlock).BlockParent)
-                return;
-
+            if (DraggedObject is BuildingBlockStart || DraggedObject == newParent.TemplatedParent) return;//checks if child is StartBlock
+            if (DraggedObject.MainContent is IReturnCommand == false) return;//checks if child returns a value
+            if (newParent.TemplatedParent is ContentBlock && DraggedObject == (newParent.TemplatedParent as ContentBlock).BlockParent) return;//Makes sure there is no tree topology loop
+            if (newParent.TemplatedParent is BuildingBlock && !((newParent.TemplatedParent as BuildingBlock).MainContent as ContentBlock).IsCompatible(DraggedObject)) return; //Checks if newParent accepts the type the DraggedObject is
 
             if (newParent.Children.Count == 0)
             {

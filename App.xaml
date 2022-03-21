@@ -9,8 +9,10 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/BuildingBlockStyle.xaml"/>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnVarStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnImageStyle.xaml"/>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockSetVarStyle.xaml"/>
-                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnValueStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnNumberStyle.xaml"/>
+                <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockReturnTextStyle.xaml"/>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockMathOperationStyle.xaml"/>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockNotStyle.xaml"/>
                 <ResourceDictionary Source="BuildingCanvas/CustomControls/ContentBlocks/ContentBlockWhileStyle.xaml"/>

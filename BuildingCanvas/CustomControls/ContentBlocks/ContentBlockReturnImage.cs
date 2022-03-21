@@ -8,26 +8,26 @@ using static MacroBot_v0._1.BlockData;
 
 namespace grabbableBlocks.CustomControls
 {
-    class ContentBlockReturnVar : ContentBlock, ICode, IReturnCommand
+    class ContentBlockReturnImage : ContentBlock, ICode, IReturnCommand
     {
-        static ContentBlockReturnVar()
+        static ContentBlockReturnImage()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockReturnVar), new FrameworkPropertyMetadata(typeof(ContentBlockReturnVar)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockReturnImage), new FrameworkPropertyMetadata(typeof(ContentBlockReturnImage)));
         }
 
 
-        public ContentBlockReturnVar()
-        { 
-            ContentType = ContentTypes.AllContent; 
-        }
-        public ContentBlockReturnVar(SingleContent content)
+        public ContentBlockReturnImage()
         {
-            ContentType = ContentTypes.AllContent;
+            ContentType = ContentTypes.ImageContent;
+        }
+        public ContentBlockReturnImage(SingleContent content)
+        {
+            ContentType = ContentTypes.ImageContent;
             selectedItem = content.ContentProperties[0];
         }
 
         object selectedItem;
-        private ComboBox comboxVar;
+        private ComboBox comboxImage;
 
         Brush DefaultBlockColor = new SolidColorBrush(Colors.Lime);
         Brush DefaultBorderColor = new SolidColorBrush(Color.FromRgb(32, 141, 0));
@@ -36,15 +36,15 @@ namespace grabbableBlocks.CustomControls
             BlockParent.BlockColor = DefaultBlockColor;
             BlockParent.BorderColor = DefaultBorderColor;
 
-            comboxVar = (ComboBox)Template.FindName("PART_Combobox", this);
-            comboxVar.ItemsSource = BlockBuildingCanvas.VariableList;
+            comboxImage = (ComboBox)Template.FindName("PART_Combobox", this);
+            comboxImage.ItemsSource = BlockBuildingCanvas.ImageList;
             if (selectedItem != null)
             {
-                foreach (object item in comboxVar.Items)
+                foreach (object item in comboxImage.Items)
                 {
                     if (item.ToString() == selectedItem.ToString())
                     {
-                        comboxVar.SelectedItem = item;
+                        comboxImage.SelectedItem = item;
                     }
                 }
 
@@ -54,9 +54,9 @@ namespace grabbableBlocks.CustomControls
         }
         public string GetCode()
         {
-            if (comboxVar.SelectedItem is null)
-                return "UnselectedVarName";
-            return comboxVar.SelectedItem.ToString();
+            if (comboxImage.SelectedItem is null)
+                return "UnselectedImageName";
+            return comboxImage.SelectedItem.ToString();
         }
         public override SingleContent GetData()
         {
@@ -64,7 +64,7 @@ namespace grabbableBlocks.CustomControls
             content.ContentType = GetType().ToString();
 
             content.ContentProperties = new object[1];
-            content.ContentProperties[0] = comboxVar.SelectedItem;
+            content.ContentProperties[0] = comboxImage.SelectedItem;
 
             return content;
         }

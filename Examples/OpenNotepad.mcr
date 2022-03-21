@@ -1,0 +1,1 @@
+{"savedImages":[],"script":"START(\u0022notepad.exe\u0022)\r\n"}

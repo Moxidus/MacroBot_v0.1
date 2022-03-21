@@ -17,9 +17,13 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockMouseMove), new FrameworkPropertyMetadata(typeof(ContentBlockMouseMove)));
         }
 
-        public ContentBlockMouseMove() { }
+        public ContentBlockMouseMove()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
+        }
         public ContentBlockMouseMove(SingleContent content)
         {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
             if (content.BlockList != null && content.BlockList[0] != null)
                 XStackHolder = new BuildingBlock(content.BlockList[0]);
             if (content.BlockList != null && content.BlockList[1] != null)

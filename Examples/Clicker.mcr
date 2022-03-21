@@ -1,5 +1,0 @@
-START("notepad.exe")
-
-
-
-

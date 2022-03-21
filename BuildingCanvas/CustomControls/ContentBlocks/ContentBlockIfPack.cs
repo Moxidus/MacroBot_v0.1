@@ -11,14 +11,17 @@ namespace grabbableBlocks.CustomControls
 {
     class ContentBlockIfPack : ContentBlock, ICode, IPrevCommand, INextCommand
     {
-
         static ContentBlockIfPack()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockIfPack), new FrameworkPropertyMetadata(typeof(ContentBlockIfPack)));
         }
-        public ContentBlockIfPack() { }
+        public ContentBlockIfPack()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.AllContent };
+        }
         public ContentBlockIfPack(SingleContent content)
         {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.AllContent };
             int? elifCount = int.Parse(content.ContentProperties[1].ToString());
             elCheckedHolder = bool.Parse(content.ContentProperties[0].ToString());
 

@@ -15,10 +15,14 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockWhile), new FrameworkPropertyMetadata(typeof(ContentBlockWhile)));
         }
 
-        public ContentBlockWhile() { }
+        public ContentBlockWhile()
+        {
+            AcceptedTypes = new ContentTypes[]{ ContentTypes.BoolContent };
+        }
         public ContentBlockWhile(SingleContent content)
         {
-            if(content.BlockList != null)
+            AcceptedTypes = new ContentTypes[] { ContentTypes.BoolContent };
+            if (content.BlockList != null)
                 DOValuePanelHolder = new BuildingBlock(content.BlockList[0]);
         }
         

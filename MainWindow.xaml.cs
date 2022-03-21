@@ -67,6 +67,9 @@ namespace MacroBot_v0._1
             VarListBox.ItemsSource = BlockBuildingCanvas.VariableList;
             ImageListBox.ItemsSource = BlockBuildingCanvas.ImageList;
             AssetsList.ItemsSource = BlockBuildingCanvas.ImageList;
+
+            if (Args.Length == 1)//openig files with .mcrb and .mcr extentions
+                LoadFile(Args[0]);
         }
 
 
@@ -208,7 +211,16 @@ namespace MacroBot_v0._1
             return JsonSerializer.Serialize(data);
 
         }
+        
+        private void LoadFile(string path)
+        {
+            EditingFilePath = path;
 
+            if (Path.GetExtension(path) == ".mcrb")
+                LoaderMCRB(path);
+            else
+                LoaderMCR(path);
+        }
         private void OpenFile(object sender, RoutedEventArgs e)
         {
             createNew(sender, e);
@@ -222,13 +234,7 @@ namespace MacroBot_v0._1
             if (results != true)
                 return;
 
-            string path = openFile.FileName;
-            EditingFilePath = path;
-
-            if (Path.GetExtension(path) == ".mcrb")
-                LoaderMCRB(path);
-            else
-                LoaderMCR(path);
+            LoadFile(openFile.FileName);
         }
 
         private void LoaderMCR(string pwd)
@@ -304,7 +310,8 @@ namespace MacroBot_v0._1
 
         private void StartProgram(object sender, RoutedEventArgs e)
         {
-            CodePlayer.StartCode(saveAssetsToTemp(), saveCodeToTemp());
+            //Button_Click(new Button { Content= "Generate code" },null);
+            CodePlayer.StartCode(saveAssetsToTemp(), saveCodeToTemp(), this);
         }
 
         private List<string> saveAssetsToTemp()
@@ -362,10 +369,14 @@ namespace MacroBot_v0._1
         {
             Button btn = sender as Button;
 
-            if (btn.Content.ToString() == "Insert variable block")
-                CreateBlock(new ContentBlockReturnValue());
+            if (btn.Content.ToString() == "Insert number block")
+                CreateBlock(new ContentBlockReturnNumber());
+            if (btn.Content.ToString() == "Insert text block")
+                CreateBlock(new ContentBlockReturnText());
             else if (btn.Content.ToString() == "Variable select block")
                 CreateBlock(new ContentBlockReturnVar());
+            else if (btn.Content.ToString() == "Image select block")
+                CreateBlock(new ContentBlockReturnImage());
             else if (btn.Content.ToString() == "Operation block")
                 CreateBlock(new ContentBlockMathOperation());
             else if (btn.Content.ToString() == "Set variable block")
@@ -488,6 +499,7 @@ namespace MacroBot_v0._1
                     SaveAsDialog(null, null);
                 return;
             }
+            
 
             if (Keyboard.IsKeyDown(Key.N))//Create new
                 createNew(null, null);

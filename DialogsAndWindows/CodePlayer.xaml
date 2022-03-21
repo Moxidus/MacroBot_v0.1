@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MacroBot_v0._1.Dialogs"
         mc:Ignorable="d"
-     Title="Player" MinHeight="25" Height="200" Width="350" Background="#FF525252" Opacity="0.6" AllowsTransparency="True" WindowStyle="None"
+     Title="Player" MinHeight="25" Height="25" Width="350" Background="#FF525252" Opacity="0.8" AllowsTransparency="True" WindowStyle="None"
         WindowStartupLocation="Manual" Left="0" Top="0" RenderTransformOrigin="0.5,0.5" ResizeMode="NoResize" KeyDown="Window_KeyDown">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -18,9 +18,9 @@
 
         <Label Content="Ctrl+p to stop" FontSize="11" FontFamily="Dubai" Foreground="#FFE6E6E6" Background="{x:Null}"/>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Exit" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="ExitProcess"/>
+            <Button Content="Exit" Padding="5 -7 5 0" FontSize="20" FontFamily="Dubai" Background="#FFCA3E47" BorderBrush="#FF9E213D" BorderThickness="4" Foreground="#FFE6E6E6" Click="ExitProcess"/>
             <Button Content="Stop" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="StopProcess"/>
-            <Button Content="Hide" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="HideProcess"/>
+            <Button Content="Show" Padding="5 -5 5 0" FontSize="20" FontFamily="Dubai" Background="#FF525252" BorderBrush="#FFB0B0B0" Foreground="#FFE6E6E6" Click="HideProcess"/>
         </StackPanel>
 
         <avalonEdit:TextEditor Height="auto"

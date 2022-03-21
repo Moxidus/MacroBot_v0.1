@@ -18,10 +18,15 @@ namespace grabbableBlocks.CustomControls
         }
 
 
-        public ContentBlockSin() { }
+        public ContentBlockSin()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
+            ContentType = ContentTypes.NumberContent;
+        }
         public ContentBlockSin(SingleContent content)
         {
-
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
+            ContentType = ContentTypes.NumberContent;
         }
 
 

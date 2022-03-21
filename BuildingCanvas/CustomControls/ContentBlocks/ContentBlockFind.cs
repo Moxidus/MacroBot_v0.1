@@ -11,13 +11,16 @@ namespace grabbableBlocks.CustomControls
 {
     class ContentBlockFind : ContentBlock, ICode, IInputCommand, INextCommand, IPrevCommand, IReturnCommand
     {
-
         static ContentBlockFind()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockFind), new FrameworkPropertyMetadata(typeof(ContentBlockFind)));
         }
 
-        public ContentBlockFind() { }
+        public ContentBlockFind()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.ImageContent };
+            ContentType = ContentTypes.ArrayContent;
+        }
         public ContentBlockFind(SingleContent content)
         {
 

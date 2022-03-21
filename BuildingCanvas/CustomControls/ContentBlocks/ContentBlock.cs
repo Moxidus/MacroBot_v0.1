@@ -17,7 +17,38 @@ namespace grabbableBlocks.CustomControls
             get { return (Brush)GetValue(CanvasColorProperty); }
             set { SetValue(CanvasColorProperty, value); }
         }
+        
         public static DependencyProperty CanvasColorProperty = DependencyProperty.Register("CanvasColor", typeof(Brush), typeof(ContentBlock), null);
+
+        public enum ContentTypes
+        {
+            TextContent,
+            BoolContent,
+            ImageContent,
+            NumberContent,
+            ArrayContent,
+            AllContent,
+            NoContent
+        }
+
+        public ContentTypes[] AcceptedTypes = { ContentTypes.NoContent};
+        public ContentTypes ContentType = ContentTypes.NoContent;
+
+        public bool IsCompatible(BuildingBlock buildingBlock)
+        {
+            ContentBlock foreignContent = buildingBlock.MainContent as ContentBlock;
+
+            if (AcceptedTypes[0] == ContentTypes.AllContent)
+                return true;
+            if (AcceptedTypes[0] == ContentTypes.NoContent)
+                return false;
+            if (AcceptedTypes[0] == foreignContent.ContentType)
+                return true;
+            if (foreignContent.ContentType == ContentTypes.AllContent)
+                return true;
+            return false;
+        }
+
         static ContentBlock()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlock), new FrameworkPropertyMetadata(typeof(ContentBlock)));

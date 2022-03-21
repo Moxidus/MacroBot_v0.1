@@ -17,10 +17,13 @@ namespace grabbableBlocks.CustomControls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ContentBlockDelay), new FrameworkPropertyMetadata(typeof(ContentBlockDelay)));
         }
 
-        public ContentBlockDelay() { }
+        public ContentBlockDelay()
+        {
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
+        }
         public ContentBlockDelay(SingleContent content)
         {
-
+            AcceptedTypes = new ContentTypes[] { ContentTypes.NumberContent };
         }
 
         Brush DefaultBlockColor = new SolidColorBrush(Color.FromRgb(255, 80, 255));

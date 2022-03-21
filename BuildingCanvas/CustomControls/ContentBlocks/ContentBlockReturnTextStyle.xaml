@@ -2,13 +2,15 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:grabbableBlocks.CustomControls">
 
-    <Style TargetType="local:ContentBlockReturnValue">
+    <Style TargetType="local:ContentBlockReturnText">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="local:ContentBlockReturnValue">
+                <ControlTemplate TargetType="local:ContentBlockReturnText">
                     <StackPanel Orientation="Horizontal">
+                        <Label Content="Text &quot;"/>
                         <TextBox MinWidth="60" MaxHeight="19" Margin="10 2 5 10" VerticalAlignment="Top"
                             x:Name="PART_TextBox"/>
+                        <Label Content="&quot;"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>
